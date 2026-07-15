@@ -30,13 +30,23 @@ export function Wordmark({ className }: { className?: string }) {
           `items-baseline` then does the rest, since both sit on the same baseline.
           Re-measure this ratio if either face ever changes. */}
       <span
-        className="mr-[0.1em] text-[1.042em] leading-none text-ink"
+        className="text-[1.042em] leading-none text-ink"
         style={{ fontFamily: '"Black Monster", cursive' }}
       >
         Null
       </span>
 
-      <span className="font-black tracking-tight text-red">To</span>
+      {/* Both margins are measured, in the PARENT's em, and they are what makes the
+          three words read as one word rather than as a sentence.
+          Ink gaps at 100px, before correction: Null>To = -9.6px, To>Hero = +9.3px.
+          A 19px swing, which is exactly the "Null is glued to To while Hero floats
+          off" that Marius saw. Two causes, neither guessable: Black Monster's italic
+          L overhangs its own advance by 10.6px, and Satoshi's H carries a 7px left
+          side bearing. So To is pushed right and Hero is pulled LEFT — my earlier
+          hand-set margin pushed Hero further right, the wrong direction entirely.
+          Target is a +2px ink gap at 100px: touching would be a ligature, and a
+          normal letter gap is what makes it one word. */}
+      <span className="ml-[0.116em] font-black tracking-tight text-red">To</span>
 
       {/* The extrusion trails down-right in the correction red, front face in ink:
           the same light-face / red-body relationship as the act-6 z-stack, which
@@ -49,7 +59,7 @@ export function Wordmark({ className }: { className?: string }) {
           darkens along the run so the body turns away from the light instead of
           reading as one flat slab. */}
       <span
-        className="ml-[0.14em] font-black tracking-tight text-ink"
+        className="ml-[-0.073em] font-black tracking-tight text-ink"
         style={{
           textShadow: Array.from({ length: 8 }, (_, i) => {
             const d = (i + 1) * 0.018;
