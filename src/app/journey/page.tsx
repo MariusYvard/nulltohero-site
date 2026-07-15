@@ -7,7 +7,11 @@ import { PLUGIN } from "@/lib/facts";
 
 export const metadata: Metadata = {
   title: "The journey",
-  description: `From a blank page to a site that passes review, in six corrections. The pipeline NullToHero runs: research, structure, voice, the detector, search, and the score. ${PLUGIN.commands} commands, ${PLUGIN.licence}.`,
+  // 160 chars or Google truncates it. The old copy ran to 187 and lost its own ending,
+  // and no audit had noticed because they all read the home page. Interpolated, so it
+  // moves with facts.ts: keep the tail short enough that PLUGIN.commands growing a
+  // digit cannot push it back over.
+  description: `From a blank page to a site that passes review, in six corrections: research, structure, voice, the detector, search, the score. ${PLUGIN.commands} commands, ${PLUGIN.licence}.`,
   openGraph: {
     title: "Null to hero, in six corrections",
     description: "The pipeline, phase by phase: research before pixels, structure then rhythm, commit to a voice, face the detector, findable and fast, then score the whole thing.",

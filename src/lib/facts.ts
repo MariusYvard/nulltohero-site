@@ -7,18 +7,28 @@
  * site whose whole pitch is "not vibes: named rules, measured values", stale
  * numbers are the one lie that costs the argument. One constant, one edit.
  *
- * Upstream truth is the badge line in the plugin's README, which its own
- * validator enforces against the repository:
- *   **v1.34.0** · 4 skills · 65 commands · 117 reference docs · 15 audit sub-agents
+ * `version` is NOT typed here. scripts/sync-commands.mjs already reads it out of the
+ * plugin repo and writes it into commands.json, so this file imports it rather than
+ * restating it. Hand-copying it drifted twice in one afternoon (the plugin went
+ * 1.33.1 -> 1.34.0 -> 1.35.0 -> 1.36.0 and this constant trailed every time), which is
+ * the same rot that once left the site advertising v1.2.0 / 3 skills / 35 commands.
+ * A number a human retypes on every release is a number that will be wrong: the one
+ * that is already read from the source is the one to trust. Re-run `npm run
+ * sync:commands` after a plugin release and the version follows on its own.
  *
- * Verified against github.com/MariusYvard/NullToHero @ v1.34.0 (2026-07-15).
- * When bumping: re-read that badge, and re-count perSkill from each SKILL.md's
- * Commands table.
+ * The counts below still need a human, so when bumping: re-read the badge line in the
+ * plugin's README (**vX.Y.Z** · 4 skills · 65 commands · 117 reference docs · 15 audit
+ * sub-agents), and re-count perSkill from each SKILL.md's Commands table.
  *
  * Note the README carries TWO versions: that badge line, and a shields.io badge
  * above it. Read the badge line, not the shield — the shield sat at 1.21.0 for
  * thirteen releases and nothing caught it until v1.34.0 added the check.
  */
+// Relative, not the "@/" alias, and with the JSON attribute: scripts/sync-llms.mjs
+// imports this file straight from Node, which resolves neither tsconfig paths nor a
+// bare JSON import. A constant the build can read but the sync script cannot is worse
+// than a hand-typed one, because only one of the two outputs would go stale.
+import commands from "../data/commands.json" with { type: "json" };
 /**
  * Canonical origin. Every canonical, sitemap entry, OG url and llms.txt link is
  * built from this: change it here and nowhere else.
@@ -34,7 +44,8 @@
 export const SITE_URL = "https://nulltohero.netlify.app";
 
 export const PLUGIN = {
-  version: "1.34.0",
+  /** Read from the plugin's own repo by sync-commands.mjs. Never type it here. */
+  version: commands.version,
   skills: 4,
   commands: 65,
   referenceDocs: 117,
