@@ -273,6 +273,48 @@ export function HeroScrolly() {
     if (ni >= 4) setShow3d(true);
   });
 
+  /* The terminal's screen, in viewport percentages, measured rather than assumed.
+     Kept after act 1 unmounts: the box does not move, and the 1>2 growth runs past
+     the point where idx leaves 1. Re-measured on resize because every edge here is
+     viewport-relative. */
+  const termRef = useRef<HTMLDivElement>(null);
+  const [termBox, setTermBox] = useState<{ t: number; r: number; b: number; l: number } | null>(null);
+
+  useEffect(() => {
+    if (idx !== 1) return;
+    const measure = () => {
+      const el = termRef.current;
+      if (!el) return;
+      // The <pre> is the output area, below the traffic-light bar. A page paints
+      // inside a window's screen, not across its chrome.
+      const screen = el.querySelector("pre") ?? el;
+      const r = screen.getBoundingClientRect();
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      if (r.width === 0 || r.height === 0) return;
+      setTermBox({
+        t: (r.top / H) * 100,
+        r: ((W - r.right) / W) * 100,
+        b: ((H - r.bottom) / H) * 100,
+        l: (r.left / W) * 100,
+      });
+    };
+    /* Measure only once the act has stopped drifting. Act 1 enters with y:40, and
+       idx flips to 1 at the START of that drift, so an immediate read catches the
+       terminal mid-flight and pins the paint a few px above where the screen ends
+       up. rAF gets us past the current commit; the timeout gets us past the
+       entrance. The box is static after that (the act holds still through the
+       1>2 boundary by design — that is why `under` is empty on act 1). */
+    const raf = requestAnimationFrame(measure);
+    const settled = setTimeout(measure, 320);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(settled);
+      window.removeEventListener("resize", measure);
+    };
+  }, [idx]);
+
   // Acts 0 and 2 are white pages. Flag them so the nav inverts (see globals.css)
   // instead of sitting on the blank sheet as a dark slab.
   useEffect(() => {
@@ -288,12 +330,33 @@ export function HeroScrolly() {
   const b1 = useTransform(p1, [0, 1], [100, 0]);
   const clip1 = useMotionTemplate`inset(0% 0% ${b1}% 0%)`;
 
-  // 1>2 the terminal window itself grows until it is the page
+  /* 1>2 the terminal's output becomes the page, in two beats.
+     Beat one (to 45%): the white paints DOWN inside the terminal's own box, the way
+     a page paints, covering the command line by line. The window does not move yet,
+     so you read it as this terminal producing this page.
+     Beat two: the window then grows until it IS the page.
+     Both beats in one inset(): the top/left/right insets hold at the terminal's box
+     through beat one while the bottom inset travels 63>37 (the paint), then all four
+     run to 0 (the growth).
+     Before this the white background simply appeared at full size and full opacity,
+     so the terminal blanked instantly and you watched an empty box grow — no cause,
+     no effect, just a hard swap wearing a wipe's clothes. */
   const p2 = useTransform(sp, [B[2] - WIPE, B[2] + SETTLE], [0, 1], { ease: E_EXPAND });
-  const v2 = useTransform(p2, [0, 1], [37, 0]);
-  const h2 = useTransform(p2, [0, 1], [29, 0]);
-  const rad2 = useTransform(p2, [0, 1], [10, 0]);
-  const clip2 = useMotionTemplate`inset(${v2}% ${h2}% ${v2}% ${h2}% round ${rad2}px)`;
+  /* Geometry measured from the real terminal, not guessed at in percentages.
+     Hardcoded insets (42/29) only matched one viewport: the terminal is
+     min(86vw, 660px) wide with a content-driven height, so its edges move against
+     the viewport at every size. The paint landed as a narrow rounded card floating
+     inside the window instead of a page filling its screen — the whole causal read
+     lost, for want of a getBoundingClientRect. `box` is the terminal's own screen
+     (the <pre>, below the title bar), so the paint starts exactly where output does. */
+  const box = termBox ?? { t: 42, r: 29, b: 35, l: 29 };
+  const top2 = useTransform(p2, [0, 0.45, 1], [box.t, box.t, 0]);
+  const bot2 = useTransform(p2, [0, 0.45, 1], [100 - box.t, box.b, 0]);
+  const l2 = useTransform(p2, [0, 0.45, 1], [box.l, box.l, 0]);
+  const r2 = useTransform(p2, [0, 0.45, 1], [box.r, box.r, 0]);
+  // No radius: a screen has square corners, and a rounded rect reads as a floating
+  // card rather than as this window's own output.
+  const clip2 = useMotionTemplate`inset(${top2}% ${r2}% ${bot2}% ${l2}%)`;
 
   // 2>3 the effects iris open out of the page's centre
   const p3 = useTransform(sp, [B[3] - WIPE, B[3] + SETTLE], [0, 1], { ease: E_IRIS });
@@ -389,9 +452,13 @@ export function HeroScrolly() {
         </Act>
 
         {/* 1 — TERMINAL: the blind lands, the command types itself. */}
-        <Act sp={sp} i={1} clip={clip1} enter={{ y: 40 }} under={{ scale: 1.06 }} className="bg-[oklch(19%_0.012_265)]">
+        {/* No `under` drift: the terminal must hold perfectly still while the page
+            paints into its screen. Act 2's clip is in viewport percentages, so any
+            movement here slides the window out from under the paint and the causal
+            read ("this terminal produced this page") breaks. It used to scale 1.06. */}
+        <Act sp={sp} i={1} clip={clip1} enter={{ y: 40 }} className="bg-[oklch(19%_0.012_265)]">
           {idx === 1 && (
-            <Terminal startOnView={false} className="h-auto max-h-none w-[min(86vw,660px)] max-w-none font-mono shadow-2xl">
+            <Terminal ref={termRef} startOnView={false} className="h-auto max-h-none w-[min(86vw,660px)] max-w-none font-mono shadow-2xl">
               <TypingAnimation duration={42} className="text-base text-green">
                 {'$ claude "build me a landing page"'}
               </TypingAnimation>

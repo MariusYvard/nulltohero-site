@@ -215,6 +215,8 @@ interface TerminalProps {
   className?: string;
   sequence?: boolean;
   startOnView?: boolean;
+  /** Exposed so the hero can measure the screen it paints the next act into. */
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 export const Terminal = ({
@@ -222,6 +224,7 @@ export const Terminal = ({
   className,
   sequence = true,
   startOnView = true,
+  ref,
 }: TerminalProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(containerRef as React.RefObject<Element>, {
@@ -255,7 +258,12 @@ export const Terminal = ({
 
   const content = (
     <div
-      ref={containerRef}
+      // Keeps the component's own in-view ref while handing the node to the caller.
+      ref={(node) => {
+        containerRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as React.RefObject<HTMLDivElement | null>).current = node;
+      }}
       className={cn(
         "z-0 h-full max-h-100 w-full max-w-lg rounded-xl border border-line bg-paper-dim",
         className,
