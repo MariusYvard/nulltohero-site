@@ -39,19 +39,23 @@ export function Wordmark({ className }: { className?: string }) {
       <span className="font-black tracking-tight text-red">To</span>
 
       {/* The extrusion trails down-right in the correction red, front face in ink:
-          the same light-face / red-body relationship as the act-6 z-stack.
-          Steps are in em, not px. In px the body was a fixed 5px — ~28% of the glyph
-          at 18px, which buried "Hero" under its own shadow and got worse at every
-          smaller size. In em it holds the same proportion wherever the mark is set,
-          and three steps is a body rather than three stacked drop shadows. */}
+          the same light-face / red-body relationship as the act-6 z-stack, which
+          stacks 20 planes precisely so the body reads as solid.
+          Steps are in em, never px: at a fixed 5px the body was ~28% of the glyph at
+          18px and buried "Hero", and it got worse at every smaller size.
+          EIGHT steps, not three. Three at 0.035em apart resolved as three separate
+          ridges once the mark was seen large — a staircase, not a body. Eight at
+          0.018em close the gaps while keeping the same 0.145em depth, and the red
+          darkens along the run so the body turns away from the light instead of
+          reading as one flat slab. */}
       <span
-        className="ml-[0.06em] font-black tracking-tight text-ink"
+        className="ml-[0.14em] font-black tracking-tight text-ink"
         style={{
-          textShadow: [
-            "0.035em 0.035em 0 var(--red)",
-            "0.07em 0.07em 0 color-mix(in oklab, var(--red) 80%, black)",
-            "0.105em 0.105em 0 color-mix(in oklab, var(--red) 55%, black)",
-          ].join(", "),
+          textShadow: Array.from({ length: 8 }, (_, i) => {
+            const d = (i + 1) * 0.018;
+            const mix = Math.round(100 - i * 8);
+            return `${d}em ${d}em 0 color-mix(in oklab, var(--red) ${mix}%, black)`;
+          }).join(", "),
         }}
       >
         Hero
