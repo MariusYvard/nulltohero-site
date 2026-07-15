@@ -22,21 +22,31 @@ import { cn } from "@/lib/utils";
 /* Optical centring, measured on PAINTED ink — shadows included.
  *
  * Baseline alignment is wrong here and no nudge could save it: three words of three
- * different painted heights, sat on one baseline, cannot look level. Worse, I was
- * measuring the glyphs and ignoring Hero's extrusion, which is 0.144em of visible
- * red hanging below the baseline. Ink you can see is ink that counts.
+ * different painted heights, sat on one baseline, cannot look level. And measuring
+ * the glyphs while ignoring Hero's extrusion — 0.144em of visible red hanging below
+ * its baseline — was measuring the wrong thing. Ink you can see is ink that counts.
+ *
+ * Hero is set at 0.95: its cap matches the others exactly at 1.0, but the extrusion
+ * adds mass no cap height accounts for, so it read heavier than its neighbours.
+ * Optical size is not measured size — this is the one number here chosen by eye,
+ * and deliberately.
  *
  * Painted boxes at 100px, relative to the baseline (negative = above):
- *            top     bottom   height   centre
- *   Null    -74      +8       82       -33.0
- *   To      -74      +2       76       -36.0
- *   Hero    -74      +16.4    90.4     -28.8    (+14.4 of extrusion)
+ *            top      bottom   height   centre
+ *   Null    -74       +8       82       -33.00
+ *   To      -74       +2       76       -36.00
+ *   Hero    -70.3     +15.6    85.9     -27.36   (0.95 scale, +13.7 of extrusion)
  *
- * Three different centres, so each word is shifted onto their common centre
- * (-32.6, the average, so the mark as a whole barely moves). Re-run the numbers if
- * the extrusion depth, either face, or the 1.042 ratio ever changes.
+ * Common centre: -32.12 (the average, so the mark barely moves as a whole).
+ * Each shift below is in ITS OWN span's em, hence the divisions.
+ * Re-run all of it if the extrusion depth, the 0.95, or either face ever changes.
  */
-const CENTRE = { null: 0.004, to: 0.034, hero: -0.038 } as const;
+const HERO_SCALE = 0.95;
+const CENTRE = {
+  null: 0.0088 / 1.042,
+  to: 0.0388,
+  hero: -0.0476 / HERO_SCALE,
+} as const;
 
 export function Wordmark({ className }: { className?: string }) {
   return (
@@ -52,25 +62,24 @@ export function Wordmark({ className }: { className?: string }) {
         className="text-[1.042em] leading-none text-ink"
         style={{
           fontFamily: '"Black Monster", cursive',
-          // in this span's own em, which is 1.042 of the parent's
-          transform: `translateY(${CENTRE.null / 1.042}em)`,
+          transform: `translateY(${CENTRE.null}em)`,
         }}
       >
         Null
       </span>
 
-      {/* Both margins are measured, in the PARENT's em, and they are what makes the
-          three words read as one word rather than as a sentence.
-          Ink gaps at 100px, before correction: Null>To = -9.6px, To>Hero = +9.3px.
-          A 19px swing, which is exactly the "Null is glued to To while Hero floats
-          off" that Marius saw. Two causes, neither guessable: Black Monster's italic
-          L overhangs its own advance by 10.6px, and Satoshi's H carries a 7px left
-          side bearing. So To is pushed right and Hero is pulled LEFT — my earlier
-          hand-set margin pushed Hero further right, the wrong direction entirely.
-          Target is a +2px ink gap at 100px: touching would be a ligature, and a
-          normal letter gap is what makes it one word. */}
+      {/* Both margins are measured, in the PARENT's em. They are the whole reason the
+          three spans read as one word instead of a sentence.
+          Raw ink gaps at 100px, before correction: Null>To = -9.6px (overlapping),
+          To>Hero = +8.95px. Two causes, neither guessable by eye: Black Monster's
+          italic L overhangs its own advance by 10.6px, and Satoshi's H carries a
+          ~6.7px left side bearing at this scale. So To is pushed right and Hero is
+          pulled LEFT — an earlier hand-set margin pushed Hero further right, the
+          wrong direction, to fix a collision that could not happen.
+          Target is a +8px ink gap at 100px on BOTH sides: enough white to breathe,
+          per Marius, while staying tight enough to read as NullToHero. */}
       <span
-        className="ml-[0.116em] font-black tracking-tight text-red"
+        className="ml-[0.176em] font-black tracking-tight text-red"
         style={{ transform: `translateY(${CENTRE.to}em)` }}
       >
         To
@@ -87,7 +96,7 @@ export function Wordmark({ className }: { className?: string }) {
           darkens along the run so the body turns away from the light instead of
           reading as one flat slab. */}
       <span
-        className="ml-[-0.073em] font-black tracking-tight text-ink"
+        className="ml-[-0.0095em] text-[0.95em] font-black tracking-tight text-ink"
         style={{
           transform: `translateY(${CENTRE.hero}em)`,
           textShadow: Array.from({ length: 8 }, (_, i) => {
