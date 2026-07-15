@@ -14,7 +14,15 @@
 }
 
 /* NullToHero — modern dark. Deep cool near-black, off-white text, vivid correction red.
-   Palette verified AA (ink 17:1, soft 11:1, faint 6.6:1, red accent 5.15:1). */
+   Palette verified AA (ink 17:1, soft 11:1, faint 6.6:1, red accent 5.15:1).
+
+   The red is TWO tokens, because one value cannot do both jobs. Measured with
+   tools/audit/lib/contrast.mjs, sweeping oklch(L 0.2 29):
+     red AS TEXT on --paper needs L >= 61% to reach 4.5:1
+     WHITE TEXT ON red      needs L <= 59% to reach 4.5:1
+   At L=60% both fail. There is no single red. The old palette verified only the
+   first direction ("red accent 5.15:1") and then used the same token as a button
+   background under white text, where it measures 3.68:1. Hence --red-solid. */
 :root {
   --paper: oklch(17% 0.007 265);       /* base background */
   --paper-high: oklch(21% 0.008 265);  /* elevated surface */
@@ -24,8 +32,11 @@
   --ink-soft: oklch(81% 0.007 265);    /* secondary text */
   --ink-faint: oklch(66% 0.01 265);    /* tertiary text (AA on base) */
   --line: oklch(27% 0.007 265);        /* hairline border */
-  --red: oklch(64% 0.2 29);            /* vivid accent */
-  --red-deep: oklch(70% 0.18 29);      /* hover: brighter */
+  --red: oklch(64% 0.2 29);            /* vivid accent, AS TEXT on paper: 5.2:1 */
+  --red-solid: oklch(56% 0.2 29);      /* surface UNDER white text: 5.15:1 */
+  --red-deep: oklch(50% 0.2 29);       /* hover for --red-solid: 6.68:1. Darkens, where
+                                          the old 70% brightened and took white to 2.89:1,
+                                          i.e. the hover was less readable than the rest. */
   --green: oklch(75% 0.16 150);
   --amber: oklch(76% 0.13 80);
 }
@@ -40,6 +51,7 @@
   --color-ink-faint: var(--ink-faint);
   --color-line: var(--line);
   --color-red: var(--red);
+  --color-red-solid: var(--red-solid);
   --color-red-deep: var(--red-deep);
   --color-green: var(--green);
   --color-amber: var(--amber);
@@ -76,6 +88,10 @@ html[data-hero-light] header {
   --ink: oklch(22% 0.01 265);
   --ink-soft: oklch(42% 0.01 265);     /* 8.9:1 on paper */
   --red: oklch(53% 0.2 29);            /* 4.7:1 on paper: the marker red alone is too light */
+  /* On a light backdrop one red happens to serve both directions, so --red-solid is
+     pinned to the same value: the Install button keeps the exact colour it has today
+     (#c51f17, white on it 5.86:1) while the hero holds a light act. */
+  --red-solid: oklch(53% 0.2 29);
   --red-deep: oklch(47% 0.19 29);
 }
 

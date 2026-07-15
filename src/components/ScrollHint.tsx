@@ -42,7 +42,11 @@ export function ScrollHint({ sp }: { sp: MotionValue<number> }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 2.7, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       >
-        <span className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[#8a8780]">
+        {/* 4.87:1 on the #fbfaf7 sheet. The old #8a8780 measured 3.43:1 against a
+            4.5 threshold (11.2px is not large text), so the one word telling you how
+            to use the page was the least readable thing on it. Same warm grey family,
+            two steps darker: the lightest value on this hue that clears AA. */}
+        <span className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[#706e6b]">
           scroll
         </span>
         <motion.svg

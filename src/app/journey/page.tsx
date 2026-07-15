@@ -80,7 +80,7 @@ const PHASES: Phase[] = [
 
 const TAG_STYLE: Record<Phase["verdict"]["tag"], string> = {
   NULL: "bg-paper-faint text-paper-dim",
-  FAIL: "bg-red text-white",
+  FAIL: "bg-red-solid text-white",
   WARN: "bg-amber text-paper-dim",
   PASS: "bg-green text-paper-dim",
 };
@@ -160,7 +160,7 @@ export default function Journey() {
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 href="/#install"
-                className="inline-flex min-h-11 items-center rounded-md bg-red px-6 font-bold text-white hover:bg-red-deep"
+                className="inline-flex min-h-11 items-center rounded-md bg-red-solid px-6 font-bold text-white hover:bg-red-deep"
               >
                 Install in one line
               </Link>

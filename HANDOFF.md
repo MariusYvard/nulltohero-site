@@ -38,17 +38,29 @@ Deux exceptions **assumées**, toutes deux dans `src/components/Wordmark.tsx` : 
 
 ## Ce qui reste, par ordre de valeur
 
-### 1. Trier les 14 échecs de contraste du site (le plus intéressant)
+### 1. ~~Trier les 14 échecs de contraste du site~~ FAIT le 15/07/2026
 
-`node tools/audit/analyze.mjs https://nulltohero.netlify.app/ --render` (depuis le dépôt **plugin**) rend `contrast-ratio: FAIL`, 14 échantillons sous AA, pire 1,11:1.
+Tri, correction et doctrine : voir **`NOTES.md`, section "Contraste"**. Le compte est passé de 14 à 11, et les 11 restants sont soit assumés, soit des bugs du détecteur.
 
-**Attention, c'est un problème de jugement, pas de correction.** Plusieurs de ces échecs sont dans l'**acte 3** (la page à effets) et sont **intentionnels** : le site met en scène le crime que la règle 19 interdit. Le détecteur ne sait pas distinguer une démonstration d'un défaut.
+**Le cadrage de cette section était faux, deux fois.** Consigné ici parce que l'erreur est instructive :
 
-Vrai défaut confirmé, hors démonstration : le `scroll` de `src/components/ScrollHint.tsx` est à **3,43:1** (il lui faut 4,5). `#8a8780` sur `#fbfaf7`.
+- « Plusieurs de ces échecs sont dans l'acte 3 » : **non, l'acte 3 n'en produit aucun.** Son wordmark est en couleur transparente (`background-clip:text`), le détecteur l'écarte tout seul. Une exemption pensée pour l'acte 3 n'aurait rien exempté.
+- « C'est un problème de jugement, pas de correction » : **6 des 14 étaient des faux positifs**, donc d'abord un problème de mesure. Le vrai piège n'était pas de corriger une démonstration par erreur, c'était de croire le détecteur sur parole.
 
-### 2. Question de doctrine pour le plugin
+Répartition réelle : **3 vrais défauts** (corrigés), **5 mises en scène** (les tampons de l'acte 4, exemptés sur décision de Marius), **6 faux positifs** (la nav).
 
-Comment un audit doit-il traiter un mauvais contraste **volontaire** ? Piste : un `data-*` d'exemption que l'audit respecterait et compterait à part. À trancher avant de corriger aveuglément l'acte 3.
+### 2. Deux bugs du détecteur, à corriger dans le plugin
+
+Les 6 faux positifs de la nav, mesurés au pixel (capture, puis pixel modal dans la boîte de chaque élément) :
+
+- **Fond résolu par ascendance DOM, pas par peinture.** Les 3 spans du wordmark sont mesurés à 1,11:1 contre `#0e0f13` (le body), alors que la feuille de l'acte 0 est peinte dessous : la vraie mesure est **16,27:1**. `checks.mjs` dit lui-même « A real page background (body/:root) is trusted » : c'est cette confiance qui est fausse dès qu'une couche sœur peint en dessous. Correctif : quand rien n'a peint entre l'élément et la racine, la réponse DOM est une supposition, donc vérifier au pixel et, à défaut, marquer non mesurable. Quand l'élément (ou un ascendant) peint son propre fond opaque, la réponse DOM fait foi et reste valable même hors écran. Cette coupure sépare exactement la nav (fausse) du CTA (juste).
+- **Éléments non peints comptés.** « The journey », « Commands », « GitHub » sont mesurés à 375 px alors que leur parent est `display:none` à cette largeur. `getComputedStyle` sur un enfant d'un parent `display:none` rend son **propre** display, pas `none` : le filtre ne les voit pas. Correctif à un chiffre : écarter tout échantillon dont la boîte a une aire nulle.
+
+Le plugin a déjà énoncé ce principe pour les couleurs oklch : *« An audit that invents failures is worse than one that misses them, because it gets believed. »* Ces deux bugs sont la même faute, ailleurs.
+
+### 2 bis. Portée de l'audit, à surveiller
+
+L'audit ne mesure **qu'une page, à scroll 0**. Il n'a donc jamais vu deux vrais défauts, corrigés à l'aveugle depuis la source : le bouton Install de la nav en thème sombre (dès qu'on quitte l'acte 0), et les CTA de `/journey` (sombre en permanence). Un compte de contraste sur une seule page d'un site scrollytelling est une couverture partielle, pas un verdict.
 
 ### 3. Reste du site
 

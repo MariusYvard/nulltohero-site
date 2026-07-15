@@ -145,7 +145,21 @@ function Annotation({ sp, k, tag, txt, l, t }: { sp: MotionValue<number>; k: num
       style={{ opacity, scale, rotate, left: l, top: t, transformOrigin: "center" }}
       className="absolute flex max-w-[280px] items-baseline gap-2 rounded border border-line bg-paper-high px-2.5 py-1.5 font-mono text-xs text-ink shadow-xl"
     >
-      <b className={`rounded px-1.5 py-0.5 text-[0.66rem] font-bold text-white ${tag === "FAIL" ? "bg-red" : "bg-amber"}`}>{tag}</b>
+      {/* Staging, not chrome. These stamps depict an audit overlay landing on the slop
+          page, so they are drawn the way such an overlay looks rather than the way this
+          site's own buttons are built: white on --red is 3.68:1 and white on --amber is
+          2.18:1, both under AA. Deliberate, and therefore declared: the exemption is
+          machine-readable so the audit subtracts it from the count instead of a human
+          waving it away every run. Scope is this element only. If these badges ever stop
+          being a depiction and start being real UI, delete the attribute, do not widen it.
+          See the exemption doctrine in NOTES.md. */}
+      <b
+        data-contrast-exempt="staging"
+        data-contrast-exempt-reason="Depicts the audit overlay stamping the slop page (act 4). The badge's unreadability is the subject, not a defect in this site's own controls."
+        className={`rounded px-1.5 py-0.5 text-[0.66rem] font-bold text-white ${tag === "FAIL" ? "bg-red" : "bg-amber"}`}
+      >
+        {tag}
+      </b>
       <span>{txt}</span>
     </motion.span>
   );
@@ -518,7 +532,7 @@ export function HeroScrolly() {
             <p className="mb-[22px] max-w-[42ch] text-lg text-ink-soft">A Claude plugin that gives every page the judgment layer.</p>
             {/* Real link, unlike the mock CTAs in acts 2 and 3. This is the corrected
                 page: if a reader reaches for it, they're reaching for the real thing. */}
-            <a href="#install" className="inline-flex min-h-11 items-center rounded bg-red px-[22px] font-bold text-white hover:bg-red-deep">
+            <a href="#install" className="inline-flex min-h-11 items-center rounded bg-red-solid px-[22px] font-bold text-white hover:bg-red-deep">
               Install in one line →
             </a>
             <div className="mt-[7vh] font-mono text-sm text-ink-faint">{SPEC_LINE}</div>
@@ -556,7 +570,7 @@ export function HeroScrolly() {
               AI can already build your website. It can&apos;t tell you it&apos;s ugly. NullToHero gives Claude the judgment layer.
             </p>
             <div className="pointer-events-auto mt-7 flex flex-wrap gap-3">
-              <a href="#install" className="inline-flex min-h-11 items-center rounded-md bg-red px-6 font-bold text-white hover:bg-red-deep">Install in one line</a>
+              <a href="#install" className="inline-flex min-h-11 items-center rounded-md bg-red-solid px-6 font-bold text-white hover:bg-red-deep">Install in one line</a>
               <a href="/journey" className="inline-flex min-h-11 items-center rounded-md border border-line px-6 font-bold text-ink hover:bg-paper-high">Watch the journey</a>
             </div>
           </motion.div>

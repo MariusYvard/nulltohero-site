@@ -46,7 +46,7 @@ function Nav() {
         </div>
         <a
           href="/#install"
-          className="ml-auto inline-flex min-h-11 items-center rounded-md bg-red px-4 text-sm font-bold text-white hover:bg-red-deep sm:ml-0"
+          className="ml-auto inline-flex min-h-11 items-center rounded-md bg-red-solid px-4 text-sm font-bold text-white hover:bg-red-deep sm:ml-0"
         >
           Install
         </a>

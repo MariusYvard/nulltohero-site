@@ -42,6 +42,47 @@ Un navigateur **suspend `requestAnimationFrame` dans un onglet en arrière-plan*
 - Vérification navigateur : **les captures d'écran de Claude in Chrome traînent de 3 à 5 s après un scroll programmatique.** Elles m'ont fait diagnostiquer des bugs inexistants (terminal vide, mot 3D disparu, nav désynchronisée) qui étaient tous des frames périmées. Mesurer le DOM (`getComputedStyle`, `textContent`, un attribut `data-act`) est la seule vérification fiable ici. Lenis n'honore pas non plus toujours `scrollTo(y, {immediate:true})`.
 - Le hero expose `data-act={idx}` sur la piste : c'est le point de mesure qui a fini par isoler le gel de `scrollYProgress`. Le garder.
 
+## Contraste : le tri des 14 échecs, et la doctrine d'exemption
+
+Fait le 15/07/2026. Les 14 échantillons de `contrast-ratio: FAIL` se répartissent en **trois** catégories, pas deux. La troisième est celle qui manquait au cadrage.
+
+| Catégorie | Nb | Où |
+|---|---|---|
+| Vrais défauts | 3 | `scroll` de l'acte 0, CTA de l'acte 5, CTA de l'acte 6 |
+| Mise en scène assumée | 5 | les tampons FAIL/WARN de l'acte 4 |
+| **Faux positifs du détecteur** | 6 | la nav |
+
+**L'acte 3 ne produit aucun échec de contraste.** La page à effets pèche par gradients et par effets, pas par contraste, et son wordmark est en `background-clip:text` (couleur transparente), que le détecteur écarte de lui-même. Le cadrage de départ ("plusieurs de ces échecs sont dans l'acte 3, ils sont volontaires") était faux : une exemption pensée pour l'acte 3 n'aurait rien exempté du tout.
+
+### Cause racine des 3 vrais défauts : un rouge pour deux métiers
+
+`--red` était vérifié dans **un seul sens**, comme texte sur fond sombre (5,2:1, d'où le commentaire "red accent 5.15:1"), puis employé dans l'autre, comme fond de bouton sous du blanc (3,68:1). Personne n'avait mesuré ce sens-là.
+
+Balayage de `oklch(L 0.2 29)` avec `tools/audit/lib/contrast.mjs` :
+
+- rouge **comme texte** sur `--paper` : il faut L >= 61 % pour atteindre 4,5:1
+- **blanc sur** rouge : il faut L <= 59 % pour atteindre 4,5:1
+- à L = 60 %, les deux échouent
+
+**Aucun rouge unique ne satisfait les deux sens.** Ce n'est pas un arbitrage de goût, c'est une impossibilité mesurée, et c'est pour ça qu'il y a maintenant `--red` (accent lu) et `--red-solid` (surface lue en blanc). Le thème papier faisait déjà ça sans le dire (53 %), voilà pourquoi la nav passait.
+
+Au passage, `--red-deep` (survol) **éclaircissait** : le blanc y tombait à 2,89:1, donc le survol était moins lisible que le repos. Il assombrit maintenant (6,68:1).
+
+Deux défauts que l'audit **ne peut pas voir** ont été corrigés au même endroit : le bouton Install de la nav repasse en thème sombre dès qu'on quitte l'acte 0 (3,68:1 avant), et `/journey` est sombre en permanence. L'audit ne mesure qu'une page, à scroll 0.
+
+### Doctrine : comment traiter un mauvais contraste volontaire
+
+Retenue et appliquée aux tampons de l'acte 4 (`data-contrast-exempt="staging"` dans `HeroScrolly.tsx`). Six règles, dans cet ordre.
+
+1. **Réparer la mesure avant d'ouvrir l'exemption.** 6 des 14 échecs étaient des bugs du détecteur. Livrer l'exemption d'abord, c'est fournir l'outil qui fera taire les bugs au lieu de les corriger. L'exemption ne vaut que posée sur un détecteur juste.
+2. **Portée à l'élément, jamais héritée.** Cinq badges à exempter, c'est cinq marques. Une exemption de sous-arbre devient un blanc-seing, et le coût doit croître avec la taille du mensonge.
+3. **Le motif est obligatoire.** `data-contrast-exempt` sans `data-contrast-exempt-reason` est lui-même un échec. Tout le mécanisme tient là : le prix d'une exemption est d'écrire l'argument, et de le mettre dans le diff où la revue le voit.
+4. **Vocabulaire fermé.** `staging`, `decorative-ghost`, `disabled`, `logotype`, `incidental`. Un champ libre finit toujours par dire "parce que".
+5. **Jamais soustrait en silence.** Le verdict se calcule sur les échecs non exemptés, mais le compte exempté s'imprime toujours : `{ failures: N, exempt: M, worst: X }`. Un audit où l'on atteint zéro à l'annotation fabrique de la conformité de façade.
+6. **Exempté n'est pas conforme.** Le point qui décide de l'honnêteté du mécanisme. La WCAG 1.4.3 prévoit trois exceptions (texte incident ou inactif, logotypes, seuil du grand texte) : "c'est une démonstration" n'en fait pas partie. Le plugin doit donc rapporter ces échantillons comme **hors du jugement de l'audit, par choix de l'auteur**, pas comme conformes. Les tampons de l'acte 4 restent sous AA et le site l'assume ; il ne prétend pas le contraire.
+
+Corollaire pour la règle 19 : une règle peut être enfreinte **comme sujet**. Le marqueur dit "cet élément est une citation, pas une affirmation". Un guide de style qui cite de la mauvaise prose ne se contredit pas.
+
 ## Points connus
 
 - WebGL (acte 6) : "Context Lost" en dev après de nombreux rechargements HMR (les contextes s'accumulent, le navigateur en tue). Sur un chargement frais c'est OK. Résilience ajoutée (`preventDefault` sur `webglcontextlost`).
