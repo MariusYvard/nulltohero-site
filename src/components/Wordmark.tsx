@@ -76,8 +76,13 @@ export function Wordmark({ className }: { className?: string }) {
           ~6.7px left side bearing at this scale. So To is pushed right and Hero is
           pulled LEFT — an earlier hand-set margin pushed Hero further right, the
           wrong direction, to fix a collision that could not happen.
-          Target is a +8px ink gap at 100px on BOTH sides: enough white to breathe,
-          per Marius, while staying tight enough to read as NullToHero. */}
+          Targets are +8px (Null>To) and +11px (To>Hero) at 100px: enough white to
+          breathe while staying tight enough to read as NullToHero.
+          The two are NOT equal, on purpose. Measured equal, they do not look equal:
+          To ends on a round o and Hero opens on a flat H, and a curve recedes from
+          its neighbour, so that gap reads smaller than it measures. Null ends on a
+          slanted L already leaning away, which needs no such help. Optical kerning
+          is the one place a number has to lose to an eye. */}
       <span
         className="ml-[0.176em] font-black tracking-tight text-red"
         style={{ transform: `translateY(${CENTRE.to}em)` }}
@@ -96,7 +101,7 @@ export function Wordmark({ className }: { className?: string }) {
           darkens along the run so the body turns away from the light instead of
           reading as one flat slab. */}
       <span
-        className="ml-[-0.0095em] text-[0.95em] font-black tracking-tight text-ink"
+        className="ml-[0.0205em] text-[0.95em] font-black tracking-tight text-ink"
         style={{
           transform: `translateY(${CENTRE.hero}em)`,
           textShadow: Array.from({ length: 8 }, (_, i) => {
