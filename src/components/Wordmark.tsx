@@ -22,12 +22,16 @@ import { cn } from "@/lib/utils";
 export function Wordmark({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex select-none items-baseline", className)} aria-hidden="true">
-      {/* Black Monster runs large and sits high: a display face's caps dwarf
-          Satoshi's at the same size, so it is scaled down and nudged onto the
-          shared baseline rather than left to tower over the other two words. */}
+      {/* 1.042em is measured, not chosen: at the same font-size Black Monster's cap
+          height is 71 to Satoshi's 74 (canvas actualBoundingBoxAscent at 100px), so
+          74/71 = 1.042 makes the caps exactly equal. It was 1.3 — caps 25% too tall,
+          towering over the other two words, with a hand-tuned `top` nudge papering
+          over it. Two fonts only look aligned when their cap heights match; flex
+          `items-baseline` then does the rest, since both sit on the same baseline.
+          Re-measure this ratio if either face ever changes. */}
       <span
-        className="relative mr-[0.1em] text-[1.3em] leading-none text-ink"
-        style={{ fontFamily: '"Black Monster", cursive', top: "0.055em" }}
+        className="mr-[0.1em] text-[1.042em] leading-none text-ink"
+        style={{ fontFamily: '"Black Monster", cursive' }}
       >
         Null
       </span>
