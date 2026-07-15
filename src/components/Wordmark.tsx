@@ -19,6 +19,25 @@ import { cn } from "@/lib/utils";
  * Colours come from tokens, so the mark re-themes with the nav over the white acts
  * (see html[data-hero-light] in globals.css).
  */
+/* Optical centring, measured on PAINTED ink — shadows included.
+ *
+ * Baseline alignment is wrong here and no nudge could save it: three words of three
+ * different painted heights, sat on one baseline, cannot look level. Worse, I was
+ * measuring the glyphs and ignoring Hero's extrusion, which is 0.144em of visible
+ * red hanging below the baseline. Ink you can see is ink that counts.
+ *
+ * Painted boxes at 100px, relative to the baseline (negative = above):
+ *            top     bottom   height   centre
+ *   Null    -74      +8       82       -33.0
+ *   To      -74      +2       76       -36.0
+ *   Hero    -74      +16.4    90.4     -28.8    (+14.4 of extrusion)
+ *
+ * Three different centres, so each word is shifted onto their common centre
+ * (-32.6, the average, so the mark as a whole barely moves). Re-run the numbers if
+ * the extrusion depth, either face, or the 1.042 ratio ever changes.
+ */
+const CENTRE = { null: 0.004, to: 0.034, hero: -0.038 } as const;
+
 export function Wordmark({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex select-none items-baseline", className)} aria-hidden="true">
@@ -31,7 +50,11 @@ export function Wordmark({ className }: { className?: string }) {
           Re-measure this ratio if either face ever changes. */}
       <span
         className="text-[1.042em] leading-none text-ink"
-        style={{ fontFamily: '"Black Monster", cursive' }}
+        style={{
+          fontFamily: '"Black Monster", cursive',
+          // in this span's own em, which is 1.042 of the parent's
+          transform: `translateY(${CENTRE.null / 1.042}em)`,
+        }}
       >
         Null
       </span>
@@ -46,7 +69,12 @@ export function Wordmark({ className }: { className?: string }) {
           hand-set margin pushed Hero further right, the wrong direction entirely.
           Target is a +2px ink gap at 100px: touching would be a ligature, and a
           normal letter gap is what makes it one word. */}
-      <span className="ml-[0.116em] font-black tracking-tight text-red">To</span>
+      <span
+        className="ml-[0.116em] font-black tracking-tight text-red"
+        style={{ transform: `translateY(${CENTRE.to}em)` }}
+      >
+        To
+      </span>
 
       {/* The extrusion trails down-right in the correction red, front face in ink:
           the same light-face / red-body relationship as the act-6 z-stack, which
@@ -61,6 +89,7 @@ export function Wordmark({ className }: { className?: string }) {
       <span
         className="ml-[-0.073em] font-black tracking-tight text-ink"
         style={{
+          transform: `translateY(${CENTRE.hero}em)`,
           textShadow: Array.from({ length: 8 }, (_, i) => {
             const d = (i + 1) * 0.018;
             const mix = Math.round(100 - i * 8);
