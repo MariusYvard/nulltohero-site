@@ -15,6 +15,7 @@ import {
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { AnimatedSpan, Terminal, TypingAnimation } from "@/components/ui/terminal";
+import { ScrollHint } from "@/components/ScrollHint";
 import { PLUGIN, SPEC_LINE } from "@/lib/facts";
 
 /* The hand for act 0: [glyph, start s, duration s].
@@ -381,6 +382,10 @@ export function HeroScrolly() {
               />
             </svg>
           </div>
+
+          {/* The sheet says nothing about scrolling, and everything past it needs a
+              scroll. Leaves as soon as it is obeyed. */}
+          <ScrollHint sp={sp} />
         </Act>
 
         {/* 1 — TERMINAL: the blind lands, the command types itself. */}
