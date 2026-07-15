@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run sync:llms && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync:commands": "node scripts/sync-commands.mjs",
+    "sync:llms": "node scripts/sync-llms.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.0",

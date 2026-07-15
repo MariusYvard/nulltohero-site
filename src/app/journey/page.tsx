@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { BreadcrumbLd } from "@/components/JsonLd";
 import { PLUGIN } from "@/lib/facts";
 
 export const metadata: Metadata = {
@@ -87,6 +88,8 @@ const TAG_STYLE: Record<Phase["verdict"]["tag"], string> = {
 export default function Journey() {
   return (
     <>
+      <BreadcrumbLd name="The journey" path="/journey/" />
+
       {/* The one place a progress bar is honest: this page's subject IS progress. */}
       <ScrollProgress />
 

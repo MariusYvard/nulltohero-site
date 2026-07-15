@@ -1,0 +1,59 @@
+# Netlify build for a Next.js static export.
+#
+# `output: "export"` in next.config.ts means there is no server: `next build`
+# writes plain files to out/ and Netlify serves them. No @netlify/plugin-nextjs,
+# no functions, no edge runtime — the whole site is static and should stay that
+# way, because nothing on it needs a server.
+
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  # Pin the major so a Netlify default bump cannot silently change the build.
+  NODE_VERSION = "22"
+  # Next reads this to decide dev vs prod. Leave it to Next; setting it here is how
+  # you get a "non-standard NODE_ENV" build that ships a dev React bundle.
+
+# Security headers. A static marketing site needs almost nothing, so the policy
+# says almost nothing is allowed.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+    # Fonts are self-hosted, so no font CDN origin is allowed here. Satoshi and
+    # JetBrains Mono still come from Fontshare/Google — if those go away, drop the
+    # two font origins with them rather than leaving the holes open.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://api.fontshare.com https://fonts.googleapis.com; font-src 'self' https://cdn.fontshare.com https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+
+# The subset wordmark and any future hashed asset: immutable, they are content-addressed
+# by their own name and never change under it.
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Next's ImageResponse route exports to a file with NO extension (out/opengraph-image),
+# so a static host serves it as application/octet-stream and every social scraper
+# silently refuses the card. It is a real PNG; say so.
+[[headers]]
+  for = "/opengraph-image"
+  [headers.values]
+    Content-Type = "image/png"
+    Cache-Control = "public, max-age=86400"
+
+# llms.txt is the file answer engines read. Short cache so a release shows up fast.
+[[headers]]
+  for = "/llms.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=3600"

@@ -15,6 +15,20 @@
  * When bumping: re-read that badge, and re-count perSkill from each SKILL.md's
  * Commands table.
  */
+/**
+ * Canonical origin. Every canonical, sitemap entry, OG url and llms.txt link is
+ * built from this: change it here and nowhere else.
+ *
+ * No trailing slash. Next's `trailingSlash: true` adds one per route, and a double
+ * slash in a canonical is a duplicate-content bug that is invisible until a crawler
+ * finds it.
+ *
+ * On a custom domain later: change this, redeploy, then 301 the old host to the new
+ * one and resubmit the sitemap. The redirects matter — without them the reputation
+ * built on the old origin does not carry over.
+ */
+export const SITE_URL = "https://nulltohero.netlify.app";
+
 export const PLUGIN = {
   version: "1.33.0",
   skills: 4,

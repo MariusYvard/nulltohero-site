@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CopyButton } from "@/components/CopyButton";
 import { HeroScrolly } from "@/components/HeroScrolly";
 import { NumberTicker } from "@/components/ui/number-ticker";
+import { SoftwareLd } from "@/components/JsonLd";
 import { PLUGIN } from "@/lib/facts";
 
 const INSTALL_1 = "/plugin marketplace add MariusYvard/NullToHero";
@@ -41,6 +42,8 @@ const SKILLS = [
 export default function Home() {
   return (
     <>
+      <SoftwareLd />
+
       {/* Hero: 7-act null→hero scrollytelling (white → black), R3F 3D wordmark */}
       <HeroScrolly />
 

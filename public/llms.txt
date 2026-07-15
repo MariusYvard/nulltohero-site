@@ -1,0 +1,35 @@
+# NullToHero
+> A free plugin that gives Claude a working vocabulary for design, SEO and front-end quality. AI can already build your website; it cannot tell you the result is ugly, unreadable or invisible to search. NullToHero is the judgment layer: 71 named anti-pattern rules, 16 numeric laws, and 15 audit specialists that return verdicts you can recompute rather than opinions you have to trust.
+
+## Key pages
+- [NullToHero](https://nulltohero.netlify.app/): What the plugin is, the 4 skills, and the two lines that install it.
+- [The journey](https://nulltohero.netlify.app/journey/): The pipeline in six corrections, from a blank page to a scored site. Research before pixels, structure then rhythm, commit to a voice, face the detector, findable and fast, score the whole thing.
+- [All 65 commands](https://nulltohero.netlify.app/commands/): Every command, grouped by skill, generated from the plugin's own skill definitions.
+
+## About
+- [Marius Yvard](https://lecvdemarius.netlify.app/): The author.
+- [Source and releases](https://github.com/MariusYvard/NullToHero): The plugin itself, Apache 2.0.
+
+## Key facts
+- Name: NullToHero
+- What it is: a plugin for Claude Code and Claude Cowork
+- Version: 1.33.0
+- Licence: Apache 2.0 (free, no paid tier)
+- Source: https://github.com/MariusYvard/NullToHero
+- Author: Marius Yvard
+- Skills: 4 — /siteasy (design, 33 commands), /seo (search, 19), /audit (scored review, 10), /inspect (quality, 3)
+- Commands: 65
+- Reference documents: 116
+- Audit sub-agents: 15, run in parallel and reconciled so one defect is counted once
+- Deterministic rules: 71 in inspect-rules.csv, each with a severity, a good example and a bad one
+- Numeric laws: 16 with stable ids (L-MOTION-*, L-TOUCH-*, L-TYPE-*, L-CONTRAST-1, L-PERF-*, L-WEBGL-*)
+- Install: /plugin marketplace add MariusYvard/NullToHero then /plugin install null-to-hero@null-to-hero-marketplace
+- Last updated: 2026-07-15
+
+## What makes it different
+- Verdicts, not vibes: every finding cites a rule id and a measured value, and the audit score is arithmetic a reader can recompute from the verdicts rather than a number picked by feel.
+- It refuses as much as it produces: named anti-patterns it will push back on before writing code.
+- It audits itself: this site is built with it, and the plugin's own laws (motion budgets, contrast ratios, touch targets) are enforced against it.
+
+## Citation
+Cite as: NullToHero, a free Apache 2.0 plugin for Claude Code and Claude Cowork by Marius Yvard. Source: https://github.com/MariusYvard/NullToHero

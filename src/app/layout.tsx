@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SmoothScroll } from "@/components/SmoothScroll";
-import { PLUGIN } from "@/lib/facts";
+import { PLUGIN, SITE_URL } from "@/lib/facts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nulltohero.netlify.app"),
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
   title: {
     default: "NullToHero: the Claude plugin that corrects your website",
     template: "%s — NullToHero",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { CopyButton } from "@/components/CopyButton";
+import { BreadcrumbLd } from "@/components/JsonLd";
 import { PLUGIN } from "@/lib/facts";
 import data from "@/data/commands.json";
 
@@ -24,6 +25,8 @@ const INSTALL = "/plugin install null-to-hero@null-to-hero-marketplace";
 export default function Commands() {
   return (
     <>
+      <BreadcrumbLd name={`All ${PLUGIN.commands} commands`} path="/commands/" />
+
       <section className="mx-auto max-w-5xl px-6 pb-12 pt-32 sm:pt-40">
         <BlurFade>
           <p className="font-mono text-sm uppercase tracking-widest text-red">The vocabulary</p>
