@@ -9,11 +9,15 @@
  *
  * Upstream truth is the badge line in the plugin's README, which its own
  * validator enforces against the repository:
- *   **v1.33.0** · 4 skills · 65 commands · 116 reference docs · 15 audit sub-agents
+ *   **v1.34.0** · 4 skills · 65 commands · 117 reference docs · 15 audit sub-agents
  *
- * Verified against github.com/MariusYvard/NullToHero @ v1.33.0 (2026-07-15).
+ * Verified against github.com/MariusYvard/NullToHero @ v1.34.0 (2026-07-15).
  * When bumping: re-read that badge, and re-count perSkill from each SKILL.md's
  * Commands table.
+ *
+ * Note the README carries TWO versions: that badge line, and a shields.io badge
+ * above it. Read the badge line, not the shield — the shield sat at 1.21.0 for
+ * thirteen releases and nothing caught it until v1.34.0 added the check.
  */
 /**
  * Canonical origin. Every canonical, sitemap entry, OG url and llms.txt link is
@@ -30,10 +34,10 @@
 export const SITE_URL = "https://nulltohero.netlify.app";
 
 export const PLUGIN = {
-  version: "1.33.0",
+  version: "1.34.0",
   skills: 4,
   commands: 65,
-  referenceDocs: 116,
+  referenceDocs: 117,
   auditAgents: 15,
   /** tools/data/inspect-rules.csv */
   inspectRules: 71,
