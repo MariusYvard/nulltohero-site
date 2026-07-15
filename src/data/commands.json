@@ -1,0 +1,425 @@
+{
+  "version": "1.33.0",
+  "generatedFrom": "SKILL.md Commands tables",
+  "skills": [
+    {
+      "id": "siteasy",
+      "title": "Make it look designed",
+      "blurb": "Plan, build and refine interfaces the way a studio would.",
+      "commands": [
+        {
+          "name": "build",
+          "args": "[feature]",
+          "category": "Build",
+          "description": "Shape, then build a feature end-to-end"
+        },
+        {
+          "name": "plan",
+          "args": "[feature]",
+          "category": "Build",
+          "description": "Plan UX/UI before writing code"
+        },
+        {
+          "name": "setup",
+          "args": "",
+          "category": "Build",
+          "description": "Create PRODUCT.md and DESIGN.md context"
+        },
+        {
+          "name": "concept",
+          "args": "[project]",
+          "category": "Build",
+          "description": "Set the creative direction before building: idea, anti-reference, signature moment"
+        },
+        {
+          "name": "research",
+          "args": "[scope]",
+          "category": "Build",
+          "description": "UX research planning, methods selection, persona and journey synthesis"
+        },
+        {
+          "name": "ia",
+          "args": "[target]",
+          "category": "Build",
+          "description": "Information architecture, card sorting, tree testing, navigation patterns"
+        },
+        {
+          "name": "journey",
+          "args": "[persona]",
+          "category": "Build",
+          "description": "Generate empathy maps, journey maps, or service blueprints from research"
+        },
+        {
+          "name": "document",
+          "args": "",
+          "category": "Build",
+          "description": "Generate DESIGN.md from existing project code"
+        },
+        {
+          "name": "extract",
+          "args": "[target]",
+          "category": "Build",
+          "description": "Pull reusable tokens and components into a design system"
+        },
+        {
+          "name": "handoff",
+          "args": "[target]",
+          "category": "Build",
+          "description": "Developer handoff spec: layout, tokens, props, states, breakpoints, edge cases, motion, accessibility"
+        },
+        {
+          "name": "tokens",
+          "args": "[project]",
+          "category": "Build",
+          "description": "Audit or create a two-layer CSS token system — primitives + semantic layer + dark mode"
+        },
+        {
+          "name": "critique",
+          "args": "[target]",
+          "category": "Evaluate",
+          "description": "UX design review with heuristic scoring"
+        },
+        {
+          "name": "audit",
+          "args": "[target]",
+          "category": "Evaluate",
+          "description": "Technical quality checks (a11y, perf, responsive, WCAG 2.2, image strategy, forms)"
+        },
+        {
+          "name": "polish",
+          "args": "[target]",
+          "category": "Refine",
+          "description": "Final quality pass before shipping"
+        },
+        {
+          "name": "amplify",
+          "args": "[target]",
+          "category": "Refine",
+          "description": "Amplify safe or bland designs — bolder typography, stronger color, more presence"
+        },
+        {
+          "name": "simplify",
+          "args": "[target]",
+          "category": "Refine",
+          "description": "Reduce visual noise, tone down, strip to essence"
+        },
+        {
+          "name": "clarify",
+          "args": "[target]",
+          "category": "Refine",
+          "description": "UX copy, error messages, button labels, empty states"
+        },
+        {
+          "name": "launch",
+          "args": "[target]",
+          "category": "Refine",
+          "description": "Production hardening + performance — errors, i18n, edge cases, Core Web Vitals"
+        },
+        {
+          "name": "onboard",
+          "args": "[target]",
+          "category": "Refine",
+          "description": "First-run flows, empty states, feature discovery, activation"
+        },
+        {
+          "name": "animate",
+          "args": "[target]",
+          "category": "Enhance",
+          "description": "Add purposeful animations and motion"
+        },
+        {
+          "name": "typeset",
+          "args": "[target]",
+          "category": "Enhance",
+          "description": "Typography audit, font selection, hierarchy"
+        },
+        {
+          "name": "layout",
+          "args": "[target]",
+          "category": "Enhance",
+          "description": "Spacing systems, visual rhythm, grid tools"
+        },
+        {
+          "name": "charts",
+          "args": "[target]",
+          "category": "Enhance",
+          "description": "Accessible data visualization: chart-type choice, a11y grades, non-color fallbacks"
+        },
+        {
+          "name": "adapt",
+          "args": "[target]",
+          "category": "Enhance",
+          "description": "Mobile/tablet/desktop/print adaptation"
+        },
+        {
+          "name": "mobile",
+          "args": "[target]",
+          "category": "Enhance",
+          "description": "Phone-specific ergonomics — thumb zone, touch targets, mobile navigation, virtual keyboards, mobile audit"
+        },
+        {
+          "name": "delight",
+          "args": "[target]",
+          "category": "Enhance",
+          "description": "Micro-interactions, personality in copy, satisfying feedback"
+        },
+        {
+          "name": "overdrive",
+          "args": "[target]",
+          "category": "Advanced",
+          "description": "View Transitions API, WebGL, scroll-driven animations"
+        },
+        {
+          "name": "video",
+          "args": "[target]",
+          "category": "Advanced",
+          "description": "Guaranteed-play decorative video: classify, transcode to a canvas-decodable asset (WASM decoder), emit the drop-in component"
+        },
+        {
+          "name": "parallax",
+          "args": "[target]",
+          "category": "Advanced",
+          "description": "Multi-layer depth, scrollytelling, AI-adaptive motion governance, WCAG 2.2.2 compliance"
+        },
+        {
+          "name": "live",
+          "args": "[target]",
+          "category": "Advanced",
+          "description": "Interactive variant mode (requires running dev server)"
+        },
+        {
+          "name": "ship",
+          "args": "[scope]",
+          "category": "Journeys",
+          "description": "Finish-and-ship pipeline: polish, defect scan, deterministic audit, hardening, final audit"
+        },
+        {
+          "name": "overhaul",
+          "args": "[url]",
+          "category": "Journeys",
+          "description": "Audit-driven rework: baseline, triage by remediation route, execute, compare"
+        },
+        {
+          "name": "express",
+          "args": "[brief]",
+          "category": "Journeys",
+          "description": "Zero-to-landing: setup, concept, tokens, plan, build, motion, checks, launch"
+        }
+      ]
+    },
+    {
+      "id": "seo",
+      "title": "Make it findable",
+      "blurb": "Get found by Google and by the engines that read your site first.",
+      "commands": [
+        {
+          "name": "audit",
+          "args": "[url]",
+          "category": "Full site SEO audit — crawls up to 500 pages, scores 7 dimensions, outputs ACTION-PLAN.md",
+          "description": "[references/audit.md](references/audit.md)"
+        },
+        {
+          "name": "page",
+          "args": "[url]",
+          "category": "Deep single-page analysis — title, meta, H1-H6, schema, images, content quality, score",
+          "description": "[references/page.md](references/page.md)"
+        },
+        {
+          "name": "plan",
+          "args": "[business-type]",
+          "category": "Complete SEO strategy — architecture, content pillars, keyword plan, 4-phase roadmap",
+          "description": "[references/plan.md](references/plan.md) + [references/plan-assets/](references/plan-assets/)"
+        },
+        {
+          "name": "technical",
+          "args": "[url]",
+          "category": "Technical audit — robots.txt, sitemaps, Core Web Vitals, mobile, security, JS rendering",
+          "description": "[references/technical.md](references/technical.md)"
+        },
+        {
+          "name": "schema",
+          "args": "[url]",
+          "category": "Detect, validate, and generate Schema.org JSON-LD — Organization, Article, Product, etc.",
+          "description": "[references/schema.md](references/schema.md)"
+        },
+        {
+          "name": "content",
+          "args": "[url]",
+          "category": "E-E-A-T analysis, readability, keyword density, AI citation readiness",
+          "description": "[references/content.md](references/content.md)"
+        },
+        {
+          "name": "geo",
+          "args": "[url]",
+          "category": "AI search optimization — Google AI Overviews, ChatGPT, Perplexity, llms.txt, brand signals",
+          "description": "[references/geo.md](references/geo.md)"
+        },
+        {
+          "name": "sitemap",
+          "args": "[url]",
+          "category": "XML sitemap validation and generation with industry-specific templates",
+          "description": "[references/sitemap.md](references/sitemap.md)"
+        },
+        {
+          "name": "images",
+          "args": "[url]",
+          "category": "Image SEO audit — alt text, formats (WebP/AVIF), lazy loading, CLS, LCP",
+          "description": "[references/images.md](references/images.md)"
+        },
+        {
+          "name": "local",
+          "args": "[business]",
+          "category": "Local SEO — Google Business Profile, NAP consistency, citations, reviews, LocalBusiness schema",
+          "description": "[references/local.md](references/local.md)"
+        },
+        {
+          "name": "hreflang",
+          "args": "[url]",
+          "category": "Hreflang validation and generation for multilingual and multi-region sites",
+          "description": "[references/hreflang.md](references/hreflang.md)"
+        },
+        {
+          "name": "programmatic",
+          "args": "[url]",
+          "category": "Programmatic SEO — URL patterns, quality gates (warn 100+, hard stop 500+), deduplication",
+          "description": "[references/programmatic.md](references/programmatic.md)"
+        },
+        {
+          "name": "competitor-pages",
+          "args": "[url]",
+          "category": "\"X vs Y\" and \"alternatives to X\" pages with feature matrices, FAQ schema, conversion hooks",
+          "description": "[references/competitor-pages.md](references/competitor-pages.md)"
+        },
+        {
+          "name": "cluster",
+          "args": "[keyword]",
+          "category": "Semantic keyword clustering — intent-based grouping, content architecture, gap analysis",
+          "description": "[references/cluster.md](references/cluster.md)"
+        },
+        {
+          "name": "sxo",
+          "args": "[url]",
+          "category": "Search Experience Optimization — intent alignment, page-type matching, persona analysis",
+          "description": "[references/sxo.md](references/sxo.md)"
+        },
+        {
+          "name": "drift",
+          "args": "[url]",
+          "category": "SEO drift monitoring — baseline capture, change detection, history tracking",
+          "description": "[references/drift.md](references/drift.md)"
+        },
+        {
+          "name": "backlinks",
+          "args": "[url]",
+          "category": "Backlink profile analysis via free data sources (Moz, Bing, Common Crawl, GSC)",
+          "description": "[references/backlinks.md](references/backlinks.md)"
+        },
+        {
+          "name": "ecommerce",
+          "args": "[url]",
+          "category": "E-commerce SEO — product pages, category pages, faceted navigation, Product schema",
+          "description": "[references/ecommerce.md](references/ecommerce.md)"
+        },
+        {
+          "name": "report",
+          "args": "[url\\|file\\|generate]",
+          "category": "Format any audit output as a client-ready Markdown report or PDF with score gauges",
+          "description": "[references/report.md](references/report.md)"
+        }
+      ]
+    },
+    {
+      "id": "inspect",
+      "title": "Make it pass review",
+      "blurb": "Named rules, measured values, verdicts. Not vibes.",
+      "commands": [
+        {
+          "name": "detect",
+          "args": "[target]",
+          "category": "Deterministic anti-pattern scan — finds focus rings, clipped dropdowns, pure black/white, tiny touch targets, missing reduced-motion, and more",
+          "description": "[references/detect.md](references/detect.md)"
+        },
+        {
+          "name": "preview",
+          "args": "[target]",
+          "category": "Real Chromium screenshot — desktop + mobile viewports, reads back visually, fixes bugs in a loop",
+          "description": "[references/preview.md](references/preview.md)"
+        },
+        {
+          "name": "review",
+          "args": "[file]",
+          "category": "Design engineering code review — motion crimes, a11y violations, forbidden patterns, Before/After table with score; plus code robustness (security, performance, correctness)",
+          "description": "[references/review.md](references/review.md) + [references/code-quality.md](references/code-quality.md)"
+        }
+      ]
+    },
+    {
+      "id": "audit",
+      "title": "Score the whole thing",
+      "blurb": "Every specialist at once, reconciled into one scored report.",
+      "commands": [
+        {
+          "name": "full",
+          "args": "[url]",
+          "category": "All 15 sub-agents across SEO, defects, and design; unified report + action plan",
+          "description": "[references/full.md](references/full.md)"
+        },
+        {
+          "name": "seo",
+          "args": "[url]",
+          "category": "Search-visibility group only (5 SEO sub-agents)",
+          "description": "[references/full.md](references/full.md)"
+        },
+        {
+          "name": "defects",
+          "args": "[url]",
+          "category": "Front-end defect group only (4 inspect sub-agents)",
+          "description": "[references/full.md](references/full.md)"
+        },
+        {
+          "name": "design",
+          "args": "[url]",
+          "category": "Design-quality group only (5 siteasy sub-agents)",
+          "description": "[references/full.md](references/full.md)"
+        },
+        {
+          "name": "quick",
+          "args": "[url]",
+          "category": "One representative sub-agent per group for a fast triage",
+          "description": "[references/full.md](references/full.md)"
+        },
+        {
+          "name": "checks",
+          "args": "[url]",
+          "category": "Deterministic pre-pass only: computed checks plus `SITE-AUDIT.json`, no sub-agents",
+          "description": "[references/checks.md](references/checks.md)"
+        },
+        {
+          "name": "verify",
+          "args": "[url]",
+          "category": "Consensus re-check: re-runs the gating dimensions (a11y, interaction, technical) K times and reconciles them by majority vote",
+          "description": "[references/full.md](references/full.md)"
+        },
+        {
+          "name": "compare",
+          "args": "[A] [B]",
+          "category": "Diff two targets (before/after a site, or A vs B): per-check verdict changes and score deltas",
+          "description": "[references/compare.md](references/compare.md)"
+        },
+        {
+          "name": "learnings",
+          "args": "[file]",
+          "category": "Review LEARNINGS.md candidates accumulated by real audits and turn accepted ones into rules, gates, laws or fixtures",
+          "description": "[references/learnings.md](references/learnings.md)"
+        },
+        {
+          "name": "report",
+          "args": "[file]",
+          "category": "Format an existing audit into a client-ready report, a self-contained HTML page, or PDF",
+          "description": "[references/report.md](references/report.md) + [references/html-report.md](references/html-report.md)"
+        }
+      ]
+    }
+  ],
+  "total": 65
+}

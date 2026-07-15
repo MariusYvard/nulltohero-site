@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ComponentPropsWithoutRef } from "react";
+import { useEffect, useLayoutEffect, useRef, type ComponentPropsWithoutRef } from "react";
 import { useInView, useMotionValue, useSpring } from "motion/react";
 
 import { cn } from "@/lib/utils";
@@ -27,6 +27,24 @@ export function NumberTicker({
   const springValue = useSpring(motionValue, { damping: 60, stiffness: 100 });
   const isInView = useInView(ref, { once: true, margin: "0px" });
 
+  const format = (n: number) =>
+    Intl.NumberFormat("en-US", {
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces,
+    }).format(Number(n.toFixed(decimalPlaces)));
+
+  /* The registry version renders `startValue` in JSX, so the server HTML said
+     "0 skills · 0 commands · 0 reference docs" and only counted up once JS ran.
+     Every crawler and answer engine reads that HTML: on a site whose argument is
+     measured values, shipping zeroes to the machines is the worst possible lie,
+     and it fails our own audit checklist ("content in initial DOM, not
+     script-injected"). So JSX now renders the REAL value, and the client resets
+     to the start in a layout effect — before paint, so there is no flash. */
+  useLayoutEffect(() => {
+    if (ref.current) ref.current.textContent = format(direction === "down" ? value : startValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
     if (isInView) {
@@ -42,19 +60,15 @@ export function NumberTicker({
   useEffect(
     () =>
       springValue.on("change", (latest) => {
-        if (ref.current) {
-          ref.current.textContent = Intl.NumberFormat("en-US", {
-            minimumFractionDigits: decimalPlaces,
-            maximumFractionDigits: decimalPlaces,
-          }).format(Number(latest.toFixed(decimalPlaces)));
-        }
+        if (ref.current) ref.current.textContent = format(latest);
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [springValue, decimalPlaces],
   );
 
   return (
     <span ref={ref} className={cn("inline-block tabular-nums text-ink", className)} {...props}>
-      {startValue}
+      {format(direction === "down" ? startValue : value)}
     </span>
   );
 }
