@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run sync:llms && next build",
+    "build": "npm run sync:llms && next build && npm run csp",
     "start": "next start",
     "lint": "eslint",
     "sync:commands": "node scripts/sync-commands.mjs",
-    "sync:llms": "node scripts/sync-llms.mjs"
+    "sync:llms": "node scripts/sync-llms.mjs",
+    "csp": "node scripts/csp-headers.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.0",

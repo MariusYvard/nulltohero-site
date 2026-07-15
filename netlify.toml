@@ -28,7 +28,12 @@
     # Fonts are self-hosted, so no font CDN origin is allowed here. Satoshi and
     # JetBrains Mono still come from Fontshare/Google — if those go away, drop the
     # two font origins with them rather than leaving the holes open.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://api.fontshare.com https://fonts.googleapis.com; font-src 'self' https://cdn.fontshare.com https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+    # The CSP is NOT here on purpose. It carries a SHA-256 of every inline script this
+    # build emits, and netlify.toml is read before the build runs, so it cannot know
+    # them. scripts/csp-headers.mjs writes out/_headers from the artifact that ships.
+    # Do not add a Content-Security-Policy back to this file: netlify.toml wins over
+    # _headers on conflict, so it would silently replace the hashed policy with a
+    # weaker one and nothing would fail.
 
 # The subset wordmark and any future hashed asset: immutable, they are content-addressed
 # by their own name and never change under it.
