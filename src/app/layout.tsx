@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { Wordmark } from "@/components/Wordmark";
 import { PLUGIN, SITE_URL } from "@/lib/facts";
 import "./globals.css";
 
@@ -33,9 +34,10 @@ function Nav() {
     // over act 0's sheet. Fixed lets the hero own the viewport from scroll 0.
     <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper/85 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3" aria-label="Main">
-        {/* text-ink is explicit, not inherited: the light-act override rebinds --ink on the header. */}
-        <Link href="/" className="text-lg font-black tracking-tight text-ink" aria-label="NullToHero home">
-          Null<span className="text-red">To</span>Hero
+        {/* text-ink is explicit, not inherited: the light-act override rebinds --ink on the header.
+            The mark is aria-hidden, so the label carries the name for a screen reader. */}
+        <Link href="/" className="text-lg text-ink" aria-label="NullToHero home">
+          <Wordmark />
         </Link>
         <div className="ml-auto hidden gap-6 text-sm text-ink-soft sm:flex">
           <Link href="/journey" className="hover:text-ink">The journey</Link>
@@ -58,7 +60,7 @@ function Footer() {
     <footer className="border-t border-line bg-paper-high">
       <div className="mx-auto grid max-w-6xl gap-6 px-6 py-10 text-sm sm:grid-cols-3">
         <div>
-          <span className="font-black">Null<span className="text-red">To</span>Hero</span>
+          <Wordmark className="text-lg" />
           <p className="mt-2 max-w-xs text-ink-soft">
             From zero knowledge to hero website. A free plugin for Claude Code and Claude Cowork.
           </p>
