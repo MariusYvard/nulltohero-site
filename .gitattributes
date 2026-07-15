@@ -1,0 +1,10 @@
+# Normalize to LF in the repository. Without this, every file authored on Windows
+# lands as CRLF and the first diff on another machine is the whole file.
+* text=auto eol=lf
+
+# Binary: never touch these.
+*.woff2 binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.pdf binary

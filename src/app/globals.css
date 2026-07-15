@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* Act 0's written hand. Self-hosted and subset to the 8 glyphs of "NullToHero"
+   (122 KB TTF -> 2.6 KB woff2), so it costs less than a Google Fonts round trip.
+   LICENCE: Black Monster is personal-use only; the author's readme requires a
+   licence for PROMOTIONAL use, which a product site is. To be settled before
+   deploy — see NOTES.md. Reverting means swapping this family for Yellowtail (OFL). */
+@font-face {
+  font-family: "Black Monster";
+  src: url("/fonts/black-monster.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* NullToHero — modern dark. Deep cool near-black, off-white text, vivid correction red.
+   Palette verified AA (ink 17:1, soft 11:1, faint 6.6:1, red accent 5.15:1). */
+:root {
+  --paper: oklch(17% 0.007 265);       /* base background */
+  --paper-high: oklch(21% 0.008 265);  /* elevated surface */
+  --paper-dim: oklch(13% 0.006 265);   /* recessed well */
+  --paper-faint: oklch(63% 0.01 265);  /* muted light text */
+  --ink: oklch(96% 0.004 265);         /* primary text */
+  --ink-soft: oklch(81% 0.007 265);    /* secondary text */
+  --ink-faint: oklch(66% 0.01 265);    /* tertiary text (AA on base) */
+  --line: oklch(27% 0.007 265);        /* hairline border */
+  --red: oklch(64% 0.2 29);            /* vivid accent */
+  --red-deep: oklch(70% 0.18 29);      /* hover: brighter */
+  --green: oklch(75% 0.16 150);
+  --amber: oklch(76% 0.13 80);
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-high: var(--paper-high);
+  --color-paper-dim: var(--paper-dim);
+  --color-paper-faint: var(--paper-faint);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-red: var(--red);
+  --color-red-deep: var(--red-deep);
+  --color-green: var(--green);
+  --color-amber: var(--amber);
+  --font-sans: "Satoshi", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+
+/* Do NOT add `position: relative` here to silence useScroll's "container has a
+   non-static position" warning. The warning is cosmetic and useScroll measures fine
+   without it; body never scrolls anyway (html does). See NOTES.md. */
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Lenis smooth scroll */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* The hero opens on a blank sheet and passes back through a white page at act 2.
+   Rather than float a dark slab over the paper, the nav rebinds its own tokens to
+   the paper's values while a light act holds the screen. HeroScrolly sets the flag. */
+header { transition: background-color 320ms ease, border-color 320ms ease; }
+header * { transition: color 320ms ease, background-color 320ms ease, border-color 320ms ease; }
+/* @theme inline resolves utilities against these raw names, not --color-*. */
+html[data-hero-light] header {
+  --paper: oklch(98% 0.003 88);        /* the act-0 sheet */
+  --line: oklch(88% 0.005 88);
+  --ink: oklch(22% 0.01 265);
+  --ink-soft: oklch(42% 0.01 265);     /* 8.9:1 on paper */
+  --red: oklch(53% 0.2 29);            /* 4.7:1 on paper: the marker red alone is too light */
+  --red-deep: oklch(47% 0.19 29);
+}
+
+::selection { background: var(--red); color: #fff; }
+
+*:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
