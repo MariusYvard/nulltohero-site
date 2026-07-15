@@ -85,6 +85,7 @@ function Act({
   sp,
   i,
   clip,
+  bgColor,
   enter = {},
   under = {},
   hardCut = false,
@@ -94,6 +95,8 @@ function Act({
   sp: MotionValue<number>;
   i: number;
   clip?: MotionValue<string>;
+  /** An animatable background, for an act whose surface arrives before its content. */
+  bgColor?: MotionValue<string>;
   enter?: Move;
   under?: Move;
   hardCut?: boolean;
@@ -122,7 +125,7 @@ function Act({
   return (
     <motion.div
       className={`absolute inset-0 overflow-hidden ${className ?? ""}`}
-      style={{ clipPath: clip, opacity: vis, pointerEvents: pe, zIndex: i, willChange: "clip-path" }}
+      style={{ clipPath: clip, backgroundColor: bgColor, opacity: vis, pointerEvents: pe, zIndex: i, willChange: "clip-path" }}
     >
       <motion.div className="grid h-full w-full place-items-center" style={{ x, y, scale, rotate, willChange: "transform" }}>
         {children}
@@ -285,10 +288,8 @@ export function HeroScrolly() {
     const measure = () => {
       const el = termRef.current;
       if (!el) return;
-      // The <pre> is the output area, below the traffic-light bar. A page paints
-      // inside a window's screen, not across its chrome.
-      const screen = el.querySelector("pre") ?? el;
-      const r = screen.getBoundingClientRect();
+      // The window itself, chrome included: it is the window that grows into the page.
+      const r = el.getBoundingClientRect();
       const W = window.innerWidth;
       const H = window.innerHeight;
       if (r.width === 0 || r.height === 0) return;
@@ -341,22 +342,30 @@ export function HeroScrolly() {
      Before this the white background simply appeared at full size and full opacity,
      so the terminal blanked instantly and you watched an empty box grow — no cause,
      no effect, just a hard swap wearing a wipe's clothes. */
+  /* 1>2 the terminal window grows until it IS the page.
+     Geometry measured from the real terminal (min(86vw,660px), content height), not
+     written in percentages that only ever matched one viewport. The clip starts on
+     the window's own box and runs to full screen, keeping the rounded corner until
+     the last moment so it reads as this window opening rather than a rectangle
+     arriving.
+     The white is faded IN over the first fifth rather than appearing at full opacity
+     in one frame — which was the whole complaint: the terminal blanked instantly and
+     you watched an empty box grow. This is a screen swapping its contents, contained
+     inside one window, not two acts dissolving into each other; the act boundary
+     itself is still a cover.
+     I also tried painting the white down the screen line by line. It read as a white
+     block, not as a page loading, because a terminal loading a web page is not a
+     thing anyone has ever seen. Reverted. */
   const p2 = useTransform(sp, [B[2] - WIPE, B[2] + SETTLE], [0, 1], { ease: E_EXPAND });
-  /* Geometry measured from the real terminal, not guessed at in percentages.
-     Hardcoded insets (42/29) only matched one viewport: the terminal is
-     min(86vw, 660px) wide with a content-driven height, so its edges move against
-     the viewport at every size. The paint landed as a narrow rounded card floating
-     inside the window instead of a page filling its screen — the whole causal read
-     lost, for want of a getBoundingClientRect. `box` is the terminal's own screen
-     (the <pre>, below the title bar), so the paint starts exactly where output does. */
-  const box = termBox ?? { t: 42, r: 29, b: 35, l: 29 };
-  const top2 = useTransform(p2, [0, 0.45, 1], [box.t, box.t, 0]);
-  const bot2 = useTransform(p2, [0, 0.45, 1], [100 - box.t, box.b, 0]);
-  const l2 = useTransform(p2, [0, 0.45, 1], [box.l, box.l, 0]);
-  const r2 = useTransform(p2, [0, 0.45, 1], [box.r, box.r, 0]);
-  // No radius: a screen has square corners, and a rounded rect reads as a floating
-  // card rather than as this window's own output.
-  const clip2 = useMotionTemplate`inset(${top2}% ${r2}% ${bot2}% ${l2}%)`;
+  const box = termBox ?? { t: 35, r: 20, b: 35, l: 20 };
+  const top2 = useTransform(p2, [0, 1], [box.t, 0]);
+  const bot2 = useTransform(p2, [0, 1], [box.b, 0]);
+  const l2 = useTransform(p2, [0, 1], [box.l, 0]);
+  const r2 = useTransform(p2, [0, 1], [box.r, 0]);
+  const rad2 = useTransform(p2, [0, 0.8, 1], [12, 12, 0]);
+  const clip2 = useMotionTemplate`inset(${top2}% ${r2}% ${bot2}% ${l2}% round ${rad2}px)`;
+  const white2 = useTransform(p2, [0, 0.2], [0, 1]);
+  const bg2 = useMotionTemplate`rgba(255, 255, 255, ${white2})`;
 
   // 2>3 the effects iris open out of the page's centre
   const p3 = useTransform(sp, [B[3] - WIPE, B[3] + SETTLE], [0, 1], { ease: E_IRIS });
@@ -452,11 +461,7 @@ export function HeroScrolly() {
         </Act>
 
         {/* 1 — TERMINAL: the blind lands, the command types itself. */}
-        {/* No `under` drift: the terminal must hold perfectly still while the page
-            paints into its screen. Act 2's clip is in viewport percentages, so any
-            movement here slides the window out from under the paint and the causal
-            read ("this terminal produced this page") breaks. It used to scale 1.06. */}
-        <Act sp={sp} i={1} clip={clip1} enter={{ y: 40 }} className="bg-[oklch(19%_0.012_265)]">
+        <Act sp={sp} i={1} clip={clip1} enter={{ y: 40 }} under={{ scale: 1.06 }} className="bg-[oklch(19%_0.012_265)]">
           {idx === 1 && (
             <Terminal ref={termRef} startOnView={false} className="h-auto max-h-none w-[min(86vw,660px)] max-w-none font-mono shadow-2xl">
               <TypingAnimation duration={42} className="text-base text-green">
@@ -472,7 +477,9 @@ export function HeroScrolly() {
         </Act>
 
         {/* 2 — PLAIN: the terminal's window grows into a page, which renders top to bottom. */}
-        <Act sp={sp} i={2} clip={clip2} enter={{ scale: 0.9 }} under={{ scale: 0.94 }} className="bg-white">
+        {/* bg-white moved onto an animatable backgroundColor: the surface has to
+            arrive over the terminal's screen rather than blink into place. */}
+        <Act sp={sp} i={2} clip={clip2} bgColor={bg2} enter={{ scale: 0.9 }} under={{ scale: 0.94 }}>
           <motion.div style={{ clipPath: renderClip }} className="w-[min(84vw,620px)] font-serif text-black">
             <p className="mb-4 text-[42px] font-bold">NullToHero</p>
             <p className="mb-4 text-lg">Welcome to my website. This is a paragraph of text. Click the button below to learn more about our services.</p>
