@@ -59,7 +59,14 @@ const MECHANICS = {
   title: "It lives inside Claude",
   short:
     "Not an app you log into. A plugin: two lines to install, then it answers to slash commands in the Claude you already use.",
-  commands: ["/plugin install null-to-hero@null-to-hero-marketplace"],
+  /* The four it adds, not the install line.
+     A chip is an unbreakable token — flex-wrap breaks BETWEEN chips, never inside one —
+     so "/plugin install null-to-hero@null-to-hero-marketplace" measured 396px in the real
+     JetBrains Mono against a 360px content box on desktop and 290px at 375px, and simply
+     hung out of the card. Truncating it would have been worse: a half-command on the page
+     that sells exactness. The install line has its own block below, with a copy button and
+     no width limit; what act 1 owes the reader is what Claude gains, which is these. */
+  commands: ["/siteasy", "/seo", "/inspect", "/audit"],
 };
 
 type Narration = { n: string; caption: string; title?: string; short?: string; commands?: string[] };
