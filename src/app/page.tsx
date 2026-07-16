@@ -4,9 +4,50 @@ import { HeroScrolly } from "@/components/HeroScrolly";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { SoftwareLd } from "@/components/JsonLd";
 import { PLUGIN } from "@/lib/facts";
+import { PHASES } from "@/lib/pipeline";
 
 const INSTALL_1 = "/plugin marketplace add MariusYvard/NullToHero";
 const INSTALL_2 = "/plugin install null-to-hero@null-to-hero-marketplace";
+
+/* The mechanics, which this page never stated. It opened on seven acts of a wordmark
+   and closed on an install block, and the one sentence naming the prerequisite ("Works
+   in Claude Code and Claude Cowork") sat in 14px grey under the second code block. A
+   visitor who does not already know what a Claude plugin is learned nothing here: the
+   whole explanation was one click away on /journey, which most of them never take.
+   Four steps, each one a thing you actually type.
+
+   No sample output is shown, and that is a decision, not an omission. The plugin's own
+   doctrine is that an audit which invents failures is worse than one that misses them,
+   because it gets believed. A fabricated terminal on the page that sells the detector
+   would be the same lie, one floor up. Every claim below is traceable: the counts to
+   facts.ts, the command descriptions to data/commands.json, which sync-commands.mjs
+   generates from the plugin's own SKILL.md tables. */
+const STEPS = [
+  {
+    n: "01",
+    title: "Install it once",
+    body: "Two lines, typed into Claude Code or Claude Cowork. It is a plugin: it lives inside Claude and adds commands to it, so there is nothing to host, no account and no dashboard. The marketplace keeps it current on its own.",
+    code: INSTALL_2,
+  },
+  {
+    n: "02",
+    title: "Point it at your project",
+    body: "Open the site you are working on and run setup. It reads what is already there and writes two documents: what the product is, and what the design has committed to. Every later command reads them, which is what stops the model reaching for the average.",
+    code: "/siteasy setup",
+  },
+  {
+    n: "03",
+    title: "Ask for the work",
+    body: `Then it is one slash command per job: build a feature, name what is wrong, make it findable. ${PLUGIN.commands} of them across ${PLUGIN.skills} skills, typed the way you already type /plugin.`,
+    code: "/siteasy build pricing page",
+  },
+  {
+    n: "04",
+    title: "Get a verdict, not a vibe",
+    body: `What comes back has a rule id, a measured value and a severity you can argue with. The detector carries ${PLUGIN.inspectRules} named rules and opens a real Chromium at 375 and 1440; the audit reconciles ${PLUGIN.auditAgents} specialists into one score and a plan ordered by what actually blocks you.`,
+    code: "/audit full",
+  },
+];
 
 const FACTS: { n?: number; text?: string; label: string }[] = [
   { n: PLUGIN.skills, label: "skills" },
@@ -61,6 +102,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* How it works. Sits before the skills grid on purpose: "what is in the box"
+          is unreadable to someone who does not yet know what the box is. */}
+      <section className="border-b border-line" aria-labelledby="how-title">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <p className="font-mono text-sm uppercase tracking-widest text-red">How it works</p>
+          <h2 id="how-title" className="mt-3 text-4xl font-black tracking-tight">
+            You type. It answers with receipts.
+          </h2>
+          <p className="mt-4 max-w-xl text-lg text-ink-soft">
+            NullToHero is a plugin for Claude, not an app you log into. You install it once and
+            it adds {PLUGIN.commands} commands to the Claude you already use.
+          </p>
+
+          <ol className="mt-14 grid gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-2">
+            {STEPS.map((s) => (
+              <li key={s.n} className="flex flex-col bg-paper p-8">
+                <p className="font-mono text-sm text-red">{s.n}</p>
+                <h3 className="mt-3 text-2xl font-bold tracking-tight">{s.title}</h3>
+                <p className="mt-3 flex-1 text-ink-soft">{s.body}</p>
+                <pre className="mt-6 overflow-x-auto rounded-md border border-line bg-paper-dim px-4 py-3 font-mono text-sm text-ink">
+                  <code>{s.code}</code>
+                </pre>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       {/* The skills. Count comes from SKILLS.length so the heading cannot drift from
           the grid the way "Three skills" did once /audit shipped. */}
       <section className="mx-auto max-w-6xl px-6 py-24">
@@ -76,6 +145,57 @@ export default function Home() {
               <p className="mt-3 text-ink-soft">{s.body}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      {/* The pipeline, condensed. Same six phases /journey renders in full, read from
+          @/lib/pipeline so the two can never disagree. Deliberately a different shape
+          from the two grids above: rows, not cards. Four steps and six phases stacked
+          as identical card grids would read as one list said twice, which is the exact
+          complaint the hero already earns. Only caption, title and commands: the body
+          copy is what /journey is for, and the verdict stamps are its payoff. */}
+      <section className="border-t border-line bg-paper-high" aria-labelledby="pipeline-title">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <p className="font-mono text-sm uppercase tracking-widest text-red">The order</p>
+          <h2 id="pipeline-title" className="mt-3 text-4xl font-black tracking-tight">
+            Null to hero, in six corrections.
+          </h2>
+          <p className="mt-4 max-w-xl text-lg text-ink-soft">
+            The skills are not four buttons you press at random. They are a sequence, and each
+            phase removes one way of being undecided.
+          </p>
+
+          <ol className="mt-12 border-t border-line">
+            {PHASES.map((p) => (
+              <li
+                key={p.n}
+                className="grid gap-x-6 gap-y-3 border-b border-line py-5 sm:grid-cols-[3rem_1fr_auto] sm:items-baseline"
+              >
+                <span className="font-mono text-sm text-ink-faint">{p.n}</span>
+                <div>
+                  <h3 className="text-lg font-bold tracking-tight">{p.title}</h3>
+                  <p className="font-mono text-sm text-ink-faint">{p.caption}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {p.commands.map((c) => (
+                    <code
+                      key={c}
+                      className="rounded border border-line bg-paper px-2 py-0.5 font-mono text-xs text-ink-soft"
+                    >
+                      {c}
+                    </code>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <Link
+            href="/journey"
+            className="mt-8 inline-flex min-h-11 items-center font-bold text-red hover:text-ink"
+          >
+            Read what each phase actually does →
+          </Link>
         </div>
       </section>
 
