@@ -13,7 +13,7 @@
 ## Key facts
 - Name: NullToHero
 - What it is: a plugin for Claude Code and Claude Cowork
-- Version: 1.37.0
+- Version: 1.38.0
 - Licence: Apache 2.0 (free, no paid tier)
 - Source: https://github.com/MariusYvard/NullToHero
 - Author: Marius Yvard
@@ -24,7 +24,7 @@
 - Deterministic rules: 71 in inspect-rules.csv, each with a severity, a good example and a bad one
 - Numeric laws: 16 with stable ids (L-MOTION-*, L-TOUCH-*, L-TYPE-*, L-CONTRAST-1, L-PERF-*, L-WEBGL-*)
 - Install: /plugin marketplace add MariusYvard/NullToHero then /plugin install null-to-hero@null-to-hero-marketplace
-- Last updated: 2026-07-15
+- Last updated: 2026-07-16
 
 ## What makes it different
 - Verdicts, not vibes: every finding cites a rule id and a measured value, and the audit score is arithmetic a reader can recompute from the verdicts rather than a number picked by feel.
