@@ -21,6 +21,16 @@ export type Phase = {
   n: string;
   caption: string;
   title: string;
+  /**
+   * The hero's version, read while the reader is still scrolling.
+   *
+   * `body` cannot do this job: it runs 60 words, which is a paragraph you stop and read,
+   * and nobody stops mid-scrub. The hero used to carry no prose at all for six of its
+   * seven acts (one 14px mono line, bottom left), so the story it told was legible only
+   * to someone who already knew the product. Two sentences, ~18 words: long enough to
+   * say something, short enough to land before the next wipe.
+   */
+  short: string;
   body: string;
   commands: string[];
   verdict: { tag: "NULL" | "FAIL" | "WARN" | "PASS"; text: string };
@@ -31,6 +41,7 @@ export const PHASES: Phase[] = [
     n: "01",
     caption: "before the first pixel",
     title: "Research before pixels",
+    short: "With no intent written down, the model reaches for the average. So it makes you declare one first.",
     body: "Most sites are wrong before a single line of CSS, because nobody wrote down who the page is for or what it must do. This phase produces the two documents every later command reads: what the product is, and what the design has committed to. Skipping it is why AI-built pages look like every other AI-built page: with no declared intent, the model reaches for the average.",
     commands: ["/siteasy setup", "/siteasy research", "/siteasy concept"],
     verdict: { tag: "NULL", text: "no intent declared, so anything goes" },
@@ -39,6 +50,7 @@ export const PHASES: Phase[] = [
     n: "02",
     caption: "a page exists. it has no taste.",
     title: "Structure, then rhythm",
+    short: "Architecture first, then a type scale you actually chose. Styling over the wrong structure is a poster nobody can use.",
     body: "Information architecture first, then the typographic scale and the spacing system that carry it. A page with the right structure and no styling is readable. A page with beautiful styling over the wrong structure is a poster nobody can use. The scale is a decision, not a default: pick the steps, then hold them everywhere.",
     commands: ["/siteasy plan", "/siteasy layout", "/siteasy typeset"],
     verdict: { tag: "FAIL", text: "body set at 13px, the floor is 16px" },
@@ -47,6 +59,7 @@ export const PHASES: Phase[] = [
     n: "03",
     caption: "effects are not design",
     title: "Commit to a voice",
+    short: "A voice is a set of refusals. Effects are what you reach for when you have not decided anything.",
     body: "This is where most pages reach for a gradient and a glow and call it a direction. A voice is a set of refusals: one accent, one signature moment, an anti-reference you name out loud. Effects are what you add when you have not decided anything. The plugin will ask you what you are refusing before it lets you add a beam.",
     commands: ["/siteasy craft", "/siteasy colorize", "/siteasy animate"],
     verdict: { tag: "WARN", text: "three identical cards: a template, not a decision" },
@@ -55,6 +68,7 @@ export const PHASES: Phase[] = [
     n: "04",
     caption: "the detector names every crime",
     title: "Face the detector",
+    short: `${PLUGIN.inspectRules} named rules, run against your markup and your CSS. Each one answers with a rule id, a measured value and a verdict.`,
     body: `${PLUGIN.inspectRules} named rules with a severity, a good example and a bad one, run against your markup and your CSS. Not an opinion: a rule id, a measured value and a verdict you can argue with. It reads contrast in the colour space you actually wrote, opens a real Chromium at 375 and 1440, and tells you which of your beams is an infinite loop with no reduced-motion guard.`,
     commands: ["/inspect detect", "/inspect preview", "/inspect review"],
     verdict: { tag: "FAIL", text: "no visible focus ring on the only CTA" },
@@ -63,6 +77,7 @@ export const PHASES: Phase[] = [
     n: "05",
     caption: "findable, fast, final",
     title: "Machines read it first",
+    short: "Your first visitor is a crawler, and increasingly an answer engine that will quote you without sending anyone.",
     body: "Your first visitor is a crawler, and increasingly it is an answer engine that will quote you without sending anyone. Schema so the page can be understood, Core Web Vitals so it can be reached, llms.txt and citable passages so it can be quoted correctly. Written for the era where being indexed and being cited are two different jobs.",
     commands: ["/seo audit", "/seo schema", "/seo geo"],
     verdict: { tag: "WARN", text: "no VideoObject: invisible to video search" },
@@ -71,6 +86,7 @@ export const PHASES: Phase[] = [
     n: "06",
     caption: "null to hero",
     title: "Score the whole thing",
+    short: `${PLUGIN.auditAgents} specialists in parallel, then reconciled: one defect counted once, and a plan ordered by what actually blocks you.`,
     body: `${PLUGIN.auditAgents} specialists run in parallel across search visibility, front-end defects and design quality, then reconcile: one defect counted once, conflicts recorded rather than averaged away. You get a score you can recompute by hand from the verdicts, and a plan ordered by what actually blocks you. That is the difference between a review and a feeling.`,
     commands: ["/audit full", "/audit learnings", "/audit export"],
     verdict: { tag: "PASS", text: "corrected. committed. calm." },

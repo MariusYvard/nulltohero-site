@@ -4,7 +4,6 @@ import { HeroScrolly } from "@/components/HeroScrolly";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { SoftwareLd } from "@/components/JsonLd";
 import { PLUGIN } from "@/lib/facts";
-import { PHASES } from "@/lib/pipeline";
 
 const INSTALL_1 = "/plugin marketplace add MariusYvard/NullToHero";
 const INSTALL_2 = "/plugin install null-to-hero@null-to-hero-marketplace";
@@ -148,56 +147,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* The pipeline, condensed. Same six phases /journey renders in full, read from
-          @/lib/pipeline so the two can never disagree. Deliberately a different shape
-          from the two grids above: rows, not cards. Four steps and six phases stacked
-          as identical card grids would read as one list said twice, which is the exact
-          complaint the hero already earns. Only caption, title and commands: the body
-          copy is what /journey is for, and the verdict stamps are its payoff. */}
-      <section className="border-t border-line bg-paper-high" aria-labelledby="pipeline-title">
-        <div className="mx-auto max-w-6xl px-6 py-24">
-          <p className="font-mono text-sm uppercase tracking-widest text-red">The order</p>
-          <h2 id="pipeline-title" className="mt-3 text-4xl font-black tracking-tight">
-            Null to hero, in six corrections.
-          </h2>
-          <p className="mt-4 max-w-xl text-lg text-ink-soft">
-            The skills are not four buttons you press at random. They are a sequence, and each
-            phase removes one way of being undecided.
-          </p>
-
-          <ol className="mt-12 border-t border-line">
-            {PHASES.map((p) => (
-              <li
-                key={p.n}
-                className="grid gap-x-6 gap-y-3 border-b border-line py-5 sm:grid-cols-[3rem_1fr_auto] sm:items-baseline"
-              >
-                <span className="font-mono text-sm text-ink-faint">{p.n}</span>
-                <div>
-                  <h3 className="text-lg font-bold tracking-tight">{p.title}</h3>
-                  <p className="font-mono text-sm text-ink-faint">{p.caption}</p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {p.commands.map((c) => (
-                    <code
-                      key={c}
-                      className="rounded border border-line bg-paper px-2 py-0.5 font-mono text-xs text-ink-soft"
-                    >
-                      {c}
-                    </code>
-                  ))}
-                </div>
-              </li>
-            ))}
-          </ol>
-
-          <Link
-            href="/journey"
-            className="mt-8 inline-flex min-h-11 items-center font-bold text-red hover:text-ink"
-          >
-            Read what each phase actually does →
-          </Link>
-        </div>
-      </section>
+      {/* The condensed pipeline that stood here is gone: the hero's seven acts now carry
+          the six phases themselves, so a strip repeating them one screen later was the
+          same list said twice. /journey is still where the phases are explained at
+          length, and the hero links to it. */}
 
       {/* Install */}
       <section id="install" className="border-t border-line bg-paper-dim">

@@ -2,6 +2,25 @@
 
 Site refait en Next.js 16 (export statique) + Tailwind 4 + motion (Framer Motion) + React Three Fiber. Thème sombre minimal, accent rouge correction. Le hero est un scrollytelling en 7 actes (`src/components/HeroScrolly.tsx`).
 
+## Narration : les actes portent les phases
+
+Fait le 16/07/2026. Reproche de Marius : "une personne qui arrive sur le site ne comprend pas ce qui lui arrive", "c'est juste un enchaînement de NullToHero". Exact, et la cause n'était pas la forme.
+
+**Pendant six des sept actes, tout le contenu verbal de la page était une ligne mono de 14px en bas à gauche.** Le h1, le lede et les CTA vivent dans l'acte 6 : qui n'atteignait pas la fin avait vu un wordmark rendu sept fois et lu une légende. Le hero montrait une histoire que seule `/journey` expliquait, alors que les deux disaient déjà les mêmes six temps (cf. plus bas : "les légendes font écho à la narration du hero, délibérément"). Ils ne se parlaient simplement pas.
+
+Chaque acte lit maintenant sa phase dans `src/lib/pipeline.ts` (source unique, extraite de `journey/page.tsx`) et rend un carton : numéro, légende, titre, une phrase courte (`short`, ~18 mots — le `body` fait 60 mots, personne ne s'arrête pour lire en scrubbant), puces de commandes. **Le moteur d'animation, les wipes et le timing ne sont pas touchés.**
+
+Deux irrégularités que la mise en correspondance a révélées, les deux réelles :
+
+- **L'acte 1 (le terminal) ne correspond à aucune phase.** Ce n'est pas une étape du travail, c'est la mécanique : ce qu'est la chose et où on la tape. C'était le plus gros trou de la page, l'acte 1 le porte désormais au lieu d'une vanne.
+- **L'acte 5 était légendé "corrected. committed. calm.", qui est le verdict PASS de la phase 06, pas une phase.** Donc **la phase 05 (`/seo`, 19 commandes) n'apparaissait nulle part dans le hero** : l'histoire allait design → détecteur → 3D et sautait silencieusement la deuxième skill du plugin. L'acte 5 porte la phase 05, le verdict redescend à l'acte 6 en tampon PASS, où il est mérité.
+
+**Le carton est sur une plaque, la ligne de 14px n'en avait pas besoin.** Elle survivait aux actes 2, 3 et 4 en `mix-blend-difference` : ça marche pour une ligne grise fine sur n'importe quoi, pas pour un paragraphe. Les actes sont des maquettes pleine page en couleurs arbitraires, donc le contraste contre elles n'est pas une valeur mesurable. La plaque redonne un fond tokenisé.
+
+Piège à retenir : **la plaque est `bg-paper/85`, donc l'acte transparaît et le contraste dépend de l'acte.** Mesuré contre le fond réel de chacun (pas contre `--paper`), les 4 couples tiennent AA sur les 6 actes cartonnés, pire 5,12:1 (ink-faint sur l'acte 5). La même plaque sombre sur une maquette **blanche** mesure 1,65:1 : ça ne tient que parce que chaque acte est soit la feuille claire (0 et 2, traités par `data-hero-light`, comme la nav) soit sombre. Si un acte repasse en clair, il rejoint le sélecteur ou la carte devient opaque.
+
+La section "The order" de la home (pipeline condensé) est retirée : les actes le racontent, un rappel un écran plus bas était la même liste dite deux fois. "How it works" reste, la mécanique n'est nulle part ailleurs.
+
 ## Moteur d'animation du hero
 
 Règle centrale : **aucun acte ne disparaît en fondu, il est recouvert**, comme une coupe au montage. Le fondu croisé était le reproche principal ("low effort", "répétitif") : sept fondus identiques, c'est le geste par défaut. Chaque frontière a donc sa propre mécanique, en `clip-path` sur l'acte entrant (`z-index: i`, l'acte sortant reste visible dessous et continue de bouger, ce qui donne la profondeur).

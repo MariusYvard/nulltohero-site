@@ -16,6 +16,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { AnimatedSpan, Terminal, TypingAnimation } from "@/components/ui/terminal";
 import { ScrollHint } from "@/components/ScrollHint";
+import { PHASES, type Phase } from "@/lib/pipeline";
 import { PLUGIN, SPEC_LINE } from "@/lib/facts";
 
 /* The hand for act 0: [glyph, start s, duration s].
@@ -28,14 +29,65 @@ const PEN: [string, number, number][] = [
   ["r", 1.57, 0.15], ["o", 1.69, 0.18],
 ];
 
-const ACTS = [
-  "00 — null. a blank page and a marker.",
-  "01 — it starts as a command.",
-  "02 — a page exists. it has no taste.",
-  "03 — effects are not design.",
-  "04 — the detector names every crime.",
-  "05 — corrected. committed. calm.",
-  "06 — null to hero.",
+/**
+ * The narration, one entry per act.
+ *
+ * This used to be seven strings rendered as a single 14px mono line in the bottom-left
+ * corner, and it was the ONLY prose on screen for six of the seven acts: the h1, the
+ * lede and the CTAs live in act 6, so a reader who had not reached the end had been
+ * shown a wordmark rendered seven ways and told nothing. The form was never the
+ * problem. The page simply had no words in it.
+ *
+ * The acts and /journey's six phases were already the same six beats — NOTES.md says
+ * the captions echo the hero deliberately — but the two never met, so the hero showed
+ * a story that only the journey page explained. Now each act reads its own phase out
+ * of @/lib/pipeline: same source, one told fast, one told slow.
+ *
+ * Two irregularities the mapping exposed, both real, both fixed here:
+ *
+ *  - Act 1 (the terminal) answers to no phase. It is not a step of the work, it is the
+ *    mechanics: what this thing is and where you type it. That was the single biggest
+ *    hole on the page, so act 1 now carries it instead of a punchline.
+ *  - Act 5 was captioned "corrected. committed. calm.", which is phase 06's PASS
+ *    verdict, not a phase. Phase 05 (/seo, 19 commands) therefore appeared NOWHERE in
+ *    the hero: the story ran design → detector → 3D and quietly dropped the second
+ *    largest skill in the plugin. Act 5 now carries phase 05, and the verdict line
+ *    drops to act 6 where it is earned.
+ */
+const MECHANICS = {
+  caption: "it starts as a command",
+  title: "It lives inside Claude",
+  short:
+    "Not an app you log into. A plugin: two lines to install, then it answers to slash commands in the Claude you already use.",
+  commands: ["/plugin install null-to-hero@null-to-hero-marketplace"],
+};
+
+type Narration = { n: string; caption: string; title?: string; short?: string; commands?: string[] };
+
+/* Written out rather than spread from PHASES. The hero numbers its acts 00-06 and the
+   phases number themselves 01-06, and act 0 keeps its own caption ("a blank page and a
+   marker" is the sheet you are looking at, not the phase's "before the first pixel"),
+   so a spread would silently overwrite both n and caption with the phase's. Only
+   title, short and commands are borrowed.
+
+   Act 6 is caption-only: its prose is the h1 and lede rendered inside the act itself,
+   and a narration card beside them would be the same voice speaking twice. */
+const fromPhase = (n: string, caption: string, p: Phase): Narration => ({
+  n,
+  caption,
+  title: p.title,
+  short: p.short,
+  commands: p.commands,
+});
+
+const NARRATION: Narration[] = [
+  fromPhase("00", "null. a blank page and a marker.", PHASES[0]),
+  { n: "01", ...MECHANICS },
+  fromPhase("02", PHASES[1].caption, PHASES[1]),
+  fromPhase("03", PHASES[2].caption, PHASES[2]),
+  fromPhase("04", PHASES[3].caption, PHASES[3]),
+  fromPhase("05", PHASES[4].caption, PHASES[4]),
+  { n: "06", caption: "null to hero." },
 ];
 
 /* Acts do NOT get equal sevenths of the scroll. An act should last as long as it
@@ -569,6 +621,14 @@ export function HeroScrolly() {
             <p className="mt-5 max-w-xl text-lg text-ink-soft">
               AI can already build your website. It can&apos;t tell you it&apos;s ugly. NullToHero gives Claude the judgment layer.
             </p>
+            {/* The PASS that act 5 used to wear. Act 4 stamps FAIL and WARN on the
+                specimen; this is the same stamp, at the end, on the page that earned
+                it. It is the only place "corrected. committed. calm." is a verdict
+                rather than a caption. */}
+            <p className="mt-6 inline-flex items-baseline gap-2 rounded border border-line bg-paper/70 px-2.5 py-1.5 font-mono text-xs text-ink">
+              <b className="rounded bg-green px-1.5 py-0.5 text-[0.66rem] font-bold text-paper-dim">PASS</b>
+              <span>corrected. committed. calm.</span>
+            </p>
             <div className="pointer-events-auto mt-7 flex flex-wrap gap-3">
               <a href="#install" className="inline-flex min-h-11 items-center rounded-md bg-red-solid px-6 font-bold text-white hover:bg-red-deep">Install in one line</a>
               <a href="/journey" className="inline-flex min-h-11 items-center rounded-md border border-line px-6 font-bold text-ink hover:bg-paper-high">Watch the journey</a>
@@ -576,17 +636,59 @@ export function HeroScrolly() {
           </motion.div>
         </Act>
 
-        {/* Narration caption — fades on change */}
-        <motion.p
+        {/* Narration — the act's phase, said while you are still scrolling.
+            Fades on change, same 400ms expo-out the caption always used.
+
+            It sits on a plate, which the 14px line did not need. That line survived
+            act 2, 3 and 4 on mix-blend-difference, which works for one thin grey
+            string over anything and falls apart for a paragraph: the acts are
+            full-bleed page mocks in arbitrary colours, so contrast against them is not
+            a value anyone can measure. A plate makes the background a token again, so
+            the ratio is a number rather than a hope. It also happens to be the right
+            language: act 4 stamps its verdicts on cards, and this is the same examiner
+            speaking.
+
+            Not a heading. The titles swap as you scroll, and a document outline whose
+            h2 changes identity under the reader is worse than no h2: the hero's
+            outline is its h1, in act 6. */}
+        <motion.div
           key={mounted ? idx : 0}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="pointer-events-none absolute bottom-6 left-[clamp(1.25rem,4vw,3rem)] z-20 font-mono text-sm mix-blend-difference"
-          style={{ color: "#8a8a86" }}
+          className="hero-narration pointer-events-none absolute bottom-6 left-[clamp(1.25rem,4vw,3rem)] z-20 max-w-[min(88vw,25rem)]"
         >
-          {mounted ? ACTS[idx] : ACTS[0]}
-        </motion.p>
+          {(() => {
+            const a = NARRATION[mounted ? idx : 0];
+            /* Act 6 keeps the bare line it always had: its own copy does the talking. */
+            if (!a.title) {
+              return (
+                <p className="font-mono text-sm text-ink-faint">
+                  {a.n} — {a.caption}
+                </p>
+              );
+            }
+            return (
+              <div className="rounded-lg border border-line bg-paper/85 p-5 backdrop-blur-md">
+                <p className="font-mono text-sm text-red">
+                  {a.n} — {a.caption}
+                </p>
+                <p className="mt-2 text-xl font-bold tracking-tight text-ink">{a.title}</p>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{a.short}</p>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {a.commands?.map((c) => (
+                    <code
+                      key={c}
+                      className="rounded border border-line px-1.5 py-0.5 font-mono text-xs text-ink-faint"
+                    >
+                      {c}
+                    </code>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+        </motion.div>
       </div>
     </section>
   );
