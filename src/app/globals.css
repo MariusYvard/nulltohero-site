@@ -13,6 +13,39 @@
   font-display: swap;
 }
 
+/* Satoshi and JetBrains Mono, self-hosted.
+   They used to arrive from api.fontshare.com and fonts.googleapis.com at runtime, which
+   is a dependency on someone else's uptime and on the visitor's network reaching them.
+   That is not theoretical: fonts.googleapis.com is unreachable from the author's own
+   machine (VPN), so the site rendered with no mono face at all for him while the audit
+   scored the same code "fine". Same origin now: one less DNS + TLS handshake before
+   first paint, no third-party request, and the swap window shrinks to a preloaded
+   same-origin fetch.
+
+   The family names are deliberately unchanged. next/font would have given automatic
+   fallback-metric matching, but it also renames families to a hashed identifier, and
+   Wordmark3D bakes its WebGL texture via document.fonts.load("900 150px Satoshi") — a
+   renamed family silently bakes the fallback face into the 3D word. Keeping the names
+   costs the metric matching and keeps the wordmark. It is a trade, and it is written
+   down rather than discovered later.
+
+   Fontshare publishes Satoshi at 300/400/500/700/900 and NOT 800: the old stylesheet
+   requested 800 and never received it, so nothing is lost by its absence here. */
+@font-face { font-family: "Satoshi"; src: url("/fonts/satoshi-300.woff2") format("woff2"); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: "Satoshi"; src: url("/fonts/satoshi-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Satoshi"; src: url("/fonts/satoshi-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Satoshi"; src: url("/fonts/satoshi-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Satoshi"; src: url("/fonts/satoshi-900.woff2") format("woff2"); font-weight: 900; font-style: normal; font-display: swap; }
+
+/* One variable file covers 400/500/700, the three weights the site asks for. */
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-var.woff2") format("woff2-variations");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* NullToHero — modern dark. Deep cool near-black, off-white text, vivid correction red.
    Palette verified AA (ink 17:1, soft 11:1, faint 6.6:1, red accent 5.15:1).
 

@@ -28,8 +28,10 @@ import { createHash } from "node:crypto";
 import { join, relative, sep } from "node:path";
 
 const OUT = "out";
-const FONT_STYLE = "https://api.fontshare.com https://fonts.googleapis.com";
-const FONT_SRC = "https://cdn.fontshare.com https://fonts.gstatic.com";
+/* No font origins. Satoshi and JetBrains Mono are served from /fonts now, so the two
+   stylesheet origins and the two CDN origins that used to be punched through here have
+   nothing left to allow. A policy that permits an origin the site no longer contacts is
+   not a smaller policy, it is an unused hole. */
 
 function htmlFiles(dir) {
   const found = [];
@@ -68,9 +70,9 @@ for (const file of files) {
   const csp = [
     "default-src 'self'",
     `script-src ${scriptSrc}`,
-    `style-src 'self' ${FONT_STYLE}`,
+    "style-src 'self'",
     "style-src-attr 'unsafe-inline'",
-    `font-src 'self' ${FONT_SRC}`,
+    "font-src 'self'",
     "img-src 'self' data: blob:",
     "connect-src 'self'",
     "frame-ancestors 'none'",

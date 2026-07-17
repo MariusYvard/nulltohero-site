@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CopyButton } from "@/components/CopyButton";
 import { HeroScrolly } from "@/components/HeroScrolly";
 import { NumberTicker } from "@/components/ui/number-ticker";
-import { SoftwareLd } from "@/components/JsonLd";
+import { InstallHowToLd, SoftwareLd, WebSiteLd } from "@/components/JsonLd";
 import { PLUGIN } from "@/lib/facts";
 
 const INSTALL_1 = "/plugin marketplace add MariusYvard/NullToHero";
@@ -83,6 +83,10 @@ export default function Home() {
   return (
     <>
       <SoftwareLd />
+      <WebSiteLd />
+      {/* Fed the same STEPS the section renders, so the markup cannot describe an
+          install flow the page does not show. */}
+      <InstallHowToLd steps={STEPS} />
 
       {/* Hero: 7-act null→hero scrollytelling (white → black), R3F 3D wordmark */}
       <HeroScrolly />

@@ -7,13 +7,23 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  /* The homepage's own canonical, and ONLY the homepage's.
+     Next inherits this literal string into every route that does not override it, so
+     for months /journey/ and /commands/ both shipped canonical="/" and told crawlers to
+     index the homepage instead of themselves — while their own og:url and BreadcrumbList
+     said the opposite, on the same page. It looked correct here because the homepage's
+     path happens to BE "/". Every new route must set its own `alternates.canonical`,
+     with the trailing slash that `trailingSlash: true` and the sitemap already use. */
   alternates: { canonical: "/" },
   title: {
     default: "NullToHero: the Claude plugin that corrects your website",
     template: "%s — NullToHero",
   },
+  // 131 chars of a 160 budget, and no verb: unused space on the site's most valuable
+  // snippet. The tail lands it at ~152. Check the count before extending it again,
+  // /journey's went to 175 the last time a call to action was added by eye.
   description:
-    `NullToHero gives Claude a complete design, SEO and quality vocabulary: ${PLUGIN.skills} skills, ${PLUGIN.commands} commands, ${PLUGIN.referenceDocs} reference docs. Free, ${PLUGIN.licence}.`,
+    `NullToHero gives Claude a complete design, SEO and quality vocabulary: ${PLUGIN.skills} skills, ${PLUGIN.commands} commands, ${PLUGIN.referenceDocs} reference docs. Free, ${PLUGIN.licence}. Install in two lines.`,
   applicationName: "NullToHero",
   authors: [{ name: "Marius Yvard", url: "https://lecvdemarius.netlify.app/" }],
   openGraph: {
@@ -46,7 +56,7 @@ function Nav() {
         </div>
         <a
           href="/#install"
-          className="ml-auto inline-flex min-h-11 items-center rounded-md bg-red-solid px-4 text-sm font-bold text-white hover:bg-red-deep sm:ml-0"
+          className="ml-auto inline-flex min-h-12 items-center rounded-md bg-red-solid px-4 text-sm font-bold text-white hover:bg-red-deep sm:ml-0"
         >
           Install
         </a>
@@ -61,23 +71,49 @@ function Footer() {
       <div className="mx-auto grid max-w-6xl gap-6 px-6 py-10 text-sm sm:grid-cols-3">
         <div>
           <Wordmark className="text-lg" />
+          {/* Names the category out loud. An answer engine asked "what is NullToHero"
+              had to infer the noun from the pitch; a site that sells GEO can afford to
+              say what it is. No comparison claims: naming a rival's shortcomings on your
+              own domain is a claim you then have to keep true, and there is no honest
+              feature matrix to build without testing them. */}
           <p className="mt-2 max-w-xs text-ink-soft">
-            From zero knowledge to hero website. A free plugin for Claude Code and Claude Cowork.
+            A Claude Code plugin for design, SEO and front-end quality review. Free, and it
+            takes a website from zero knowledge to hero.
           </p>
         </div>
         <nav className="grid content-start gap-2" aria-label="Footer">
-          <Link href="/journey" className="hover:text-ink">The journey</Link>
-          <Link href="/commands" className="hover:text-ink">All {PLUGIN.commands} commands</Link>
-          <a href="https://github.com/MariusYvard/NullToHero" rel="noopener" className="hover:text-ink">GitHub</a>
-          <a href="/llms.txt" className="hover:text-ink">llms.txt</a>
+          <Link href="/journey" className="py-1 hover:text-ink">The journey</Link>
+          <Link href="/commands" className="py-1 hover:text-ink">All {PLUGIN.commands} commands</Link>
+          <a href="https://github.com/MariusYvard/NullToHero" rel="noopener" className="py-1 hover:text-ink">GitHub</a>
+          <a href="/llms.txt" className="py-1 hover:text-ink">llms.txt</a>
+          {/* GitHub Issues was already the support channel. Nothing said so, which made it
+              a channel only people who assumed it existed could use. */}
+          <a href="https://github.com/MariusYvard/NullToHero/issues" rel="noopener" className="py-1 hover:text-ink">
+            Questions or bugs: open an issue
+          </a>
         </nav>
         <div className="grid content-start gap-2 font-mono text-xs text-ink-faint">
-          <span>v{PLUGIN.version} · {PLUGIN.licence}</span>
           <span>
+            v{PLUGIN.version} ·{" "}
+            {/* The licence was plain text, and its real URL existed only inside the JSON-LD,
+                where no reader ever goes. */}
+            <a
+              href="https://www.apache.org/licenses/LICENSE-2.0"
+              rel="noopener license"
+              className="underline decoration-line underline-offset-2 hover:text-ink"
+            >
+              {PLUGIN.licence}
+            </a>
+          </span>
+          <span>Updated {PLUGIN.updated}</span>
+          {/* One sentence of who, on the site itself. It was consistent everywhere and
+              stated nowhere: a visitor had to leave to find out whose judgment this is. */}
+          <span className="not-italic">
             By{" "}
-            <a href="https://lecvdemarius.netlify.app/" rel="noopener" className="underline decoration-red underline-offset-2">
+            <a href="https://lecvdemarius.netlify.app/" rel="noopener author" className="underline decoration-red underline-offset-2">
               Marius Yvard
             </a>
+            , who builds and audits the sites this plugin was written for.
           </span>
         </div>
       </div>
@@ -89,27 +125,18 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://api.fontshare.com" />
-        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,800,900&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
-          rel="stylesheet"
-        />
-        {/* Act 0's hand is self-hosted (see @font-face in globals.css) and is the
-            first paint of the page, so it is preloaded rather than discovered in CSS. */}
-        <link
-          rel="preload"
-          href="/fonts/black-monster.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+        {/* No preconnect and no third-party stylesheet: every face is same-origin now
+            (see the @font-face block in globals.css). Four preconnects and two blocking
+            external stylesheets bought a dependency on api.fontshare.com and
+            fonts.googleapis.com being reachable, and the second one is blocked on the
+            author's own machine.
+
+            Preloaded, not discovered in CSS: these three are the first paint. The rest
+            of the Satoshi weights are left to CSS discovery — preloading a face that the
+            first screen never uses only competes with the ones it does. */}
+        <link rel="preload" href="/fonts/black-monster.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/satoshi-900.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="flex min-h-full flex-col bg-paper font-sans text-ink antialiased">
         <SmoothScroll />

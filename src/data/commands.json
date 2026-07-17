@@ -1,5 +1,6 @@
 {
   "version": "1.39.0",
+  "generatedAt": "2026-07-17",
   "generatedFrom": "SKILL.md Commands tables",
   "skills": [
     {
@@ -215,116 +216,116 @@
         {
           "name": "audit",
           "args": "[url]",
-          "category": "Full site SEO audit — crawls up to 500 pages, scores 7 dimensions, outputs ACTION-PLAN.md",
-          "description": "[references/audit.md](references/audit.md)"
+          "category": "",
+          "description": "Full site SEO audit — crawls up to 500 pages, scores 7 dimensions, outputs ACTION-PLAN.md"
         },
         {
           "name": "page",
           "args": "[url]",
-          "category": "Deep single-page analysis — title, meta, H1-H6, schema, images, content quality, score",
-          "description": "[references/page.md](references/page.md)"
+          "category": "",
+          "description": "Deep single-page analysis — title, meta, H1-H6, schema, images, content quality, score"
         },
         {
           "name": "plan",
           "args": "[business-type]",
-          "category": "Complete SEO strategy — architecture, content pillars, keyword plan, 4-phase roadmap",
-          "description": "[references/plan.md](references/plan.md) + [references/plan-assets/](references/plan-assets/)"
+          "category": "",
+          "description": "Complete SEO strategy — architecture, content pillars, keyword plan, 4-phase roadmap"
         },
         {
           "name": "technical",
           "args": "[url]",
-          "category": "Technical audit — robots.txt, sitemaps, Core Web Vitals, mobile, security, JS rendering",
-          "description": "[references/technical.md](references/technical.md)"
+          "category": "",
+          "description": "Technical audit — robots.txt, sitemaps, Core Web Vitals, mobile, security, JS rendering"
         },
         {
           "name": "schema",
           "args": "[url]",
-          "category": "Detect, validate, and generate Schema.org JSON-LD — Organization, Article, Product, etc.",
-          "description": "[references/schema.md](references/schema.md)"
+          "category": "",
+          "description": "Detect, validate, and generate Schema.org JSON-LD — Organization, Article, Product, etc."
         },
         {
           "name": "content",
           "args": "[url]",
-          "category": "E-E-A-T analysis, readability, keyword density, AI citation readiness",
-          "description": "[references/content.md](references/content.md)"
+          "category": "",
+          "description": "E-E-A-T analysis, readability, keyword density, AI citation readiness"
         },
         {
           "name": "geo",
           "args": "[url]",
-          "category": "AI search optimization — Google AI Overviews, ChatGPT, Perplexity, llms.txt, brand signals",
-          "description": "[references/geo.md](references/geo.md)"
+          "category": "",
+          "description": "AI search optimization — Google AI Overviews, ChatGPT, Perplexity, llms.txt, brand signals"
         },
         {
           "name": "sitemap",
           "args": "[url]",
-          "category": "XML sitemap validation and generation with industry-specific templates",
-          "description": "[references/sitemap.md](references/sitemap.md)"
+          "category": "",
+          "description": "XML sitemap validation and generation with industry-specific templates"
         },
         {
           "name": "images",
           "args": "[url]",
-          "category": "Image SEO audit — alt text, formats (WebP/AVIF), lazy loading, CLS, LCP",
-          "description": "[references/images.md](references/images.md)"
+          "category": "",
+          "description": "Image SEO audit — alt text, formats (WebP/AVIF), lazy loading, CLS, LCP"
         },
         {
           "name": "local",
           "args": "[business]",
-          "category": "Local SEO — Google Business Profile, NAP consistency, citations, reviews, LocalBusiness schema",
-          "description": "[references/local.md](references/local.md)"
+          "category": "",
+          "description": "Local SEO — Google Business Profile, NAP consistency, citations, reviews, LocalBusiness schema"
         },
         {
           "name": "hreflang",
           "args": "[url]",
-          "category": "Hreflang validation and generation for multilingual and multi-region sites",
-          "description": "[references/hreflang.md](references/hreflang.md)"
+          "category": "",
+          "description": "Hreflang validation and generation for multilingual and multi-region sites"
         },
         {
           "name": "programmatic",
           "args": "[url]",
-          "category": "Programmatic SEO — URL patterns, quality gates (warn 100+, hard stop 500+), deduplication",
-          "description": "[references/programmatic.md](references/programmatic.md)"
+          "category": "",
+          "description": "Programmatic SEO — URL patterns, quality gates (warn 100+, hard stop 500+), deduplication"
         },
         {
           "name": "competitor-pages",
           "args": "[url]",
-          "category": "\"X vs Y\" and \"alternatives to X\" pages with feature matrices, FAQ schema, conversion hooks",
-          "description": "[references/competitor-pages.md](references/competitor-pages.md)"
+          "category": "",
+          "description": "\"X vs Y\" and \"alternatives to X\" pages with feature matrices, FAQ schema, conversion hooks"
         },
         {
           "name": "cluster",
           "args": "[keyword]",
-          "category": "Semantic keyword clustering — intent-based grouping, content architecture, gap analysis",
-          "description": "[references/cluster.md](references/cluster.md)"
+          "category": "",
+          "description": "Semantic keyword clustering — intent-based grouping, content architecture, gap analysis"
         },
         {
           "name": "sxo",
           "args": "[url]",
-          "category": "Search Experience Optimization — intent alignment, page-type matching, persona analysis",
-          "description": "[references/sxo.md](references/sxo.md)"
+          "category": "",
+          "description": "Search Experience Optimization — intent alignment, page-type matching, persona analysis"
         },
         {
           "name": "drift",
           "args": "[url]",
-          "category": "SEO drift monitoring — baseline capture, change detection, history tracking",
-          "description": "[references/drift.md](references/drift.md)"
+          "category": "",
+          "description": "SEO drift monitoring — baseline capture, change detection, history tracking"
         },
         {
           "name": "backlinks",
           "args": "[url]",
-          "category": "Backlink profile analysis via free data sources (Moz, Bing, Common Crawl, GSC)",
-          "description": "[references/backlinks.md](references/backlinks.md)"
+          "category": "",
+          "description": "Backlink profile analysis via free data sources (Moz, Bing, Common Crawl, GSC)"
         },
         {
           "name": "ecommerce",
           "args": "[url]",
-          "category": "E-commerce SEO — product pages, category pages, faceted navigation, Product schema",
-          "description": "[references/ecommerce.md](references/ecommerce.md)"
+          "category": "",
+          "description": "E-commerce SEO — product pages, category pages, faceted navigation, Product schema"
         },
         {
           "name": "report",
-          "args": "[url\\|file\\|generate]",
-          "category": "Format any audit output as a client-ready Markdown report or PDF with score gauges",
-          "description": "[references/report.md](references/report.md)"
+          "args": "[url|file|generate]",
+          "category": "",
+          "description": "Format any audit output as a client-ready Markdown report or PDF with score gauges"
         }
       ]
     },
@@ -336,20 +337,20 @@
         {
           "name": "detect",
           "args": "[target]",
-          "category": "Deterministic anti-pattern scan — finds focus rings, clipped dropdowns, pure black/white, tiny touch targets, missing reduced-motion, and more",
-          "description": "[references/detect.md](references/detect.md)"
+          "category": "",
+          "description": "Deterministic anti-pattern scan — finds focus rings, clipped dropdowns, pure black/white, tiny touch targets, missing reduced-motion, and more"
         },
         {
           "name": "preview",
           "args": "[target]",
-          "category": "Real Chromium screenshot — desktop + mobile viewports, reads back visually, fixes bugs in a loop",
-          "description": "[references/preview.md](references/preview.md)"
+          "category": "",
+          "description": "Real Chromium screenshot — desktop + mobile viewports, reads back visually, fixes bugs in a loop"
         },
         {
           "name": "review",
           "args": "[file]",
-          "category": "Design engineering code review — motion crimes, a11y violations, forbidden patterns, Before/After table with score; plus code robustness (security, performance, correctness)",
-          "description": "[references/review.md](references/review.md) + [references/code-quality.md](references/code-quality.md)"
+          "category": "",
+          "description": "Design engineering code review — motion crimes, a11y violations, forbidden patterns, Before/After table with score; plus code robustness (security, performance, correctness)"
         }
       ]
     },
@@ -361,62 +362,62 @@
         {
           "name": "full",
           "args": "[url]",
-          "category": "All 15 sub-agents across SEO, defects, and design; unified report + action plan",
-          "description": "[references/full.md](references/full.md)"
+          "category": "",
+          "description": "All 15 sub-agents across SEO, defects, and design; unified report + action plan"
         },
         {
           "name": "seo",
           "args": "[url]",
-          "category": "Search-visibility group only (5 SEO sub-agents)",
-          "description": "[references/full.md](references/full.md)"
+          "category": "",
+          "description": "Search-visibility group only (5 SEO sub-agents)"
         },
         {
           "name": "defects",
           "args": "[url]",
-          "category": "Front-end defect group only (4 inspect sub-agents)",
-          "description": "[references/full.md](references/full.md)"
+          "category": "",
+          "description": "Front-end defect group only (4 inspect sub-agents)"
         },
         {
           "name": "design",
           "args": "[url]",
-          "category": "Design-quality group only (5 siteasy sub-agents)",
-          "description": "[references/full.md](references/full.md)"
+          "category": "",
+          "description": "Design-quality group only (5 siteasy sub-agents)"
         },
         {
           "name": "quick",
           "args": "[url]",
-          "category": "One representative sub-agent per group for a fast triage",
-          "description": "[references/full.md](references/full.md)"
+          "category": "",
+          "description": "One representative sub-agent per group for a fast triage"
         },
         {
           "name": "checks",
           "args": "[url]",
-          "category": "Deterministic pre-pass only: computed checks plus `SITE-AUDIT.json`, no sub-agents",
-          "description": "[references/checks.md](references/checks.md)"
+          "category": "",
+          "description": "Deterministic pre-pass only: computed checks plus `SITE-AUDIT.json`, no sub-agents"
         },
         {
           "name": "verify",
           "args": "[url]",
-          "category": "Consensus re-check: re-runs the gating dimensions (a11y, interaction, technical) K times and reconciles them by majority vote",
-          "description": "[references/full.md](references/full.md)"
+          "category": "",
+          "description": "Consensus re-check: re-runs the gating dimensions (a11y, interaction, technical) K times and reconciles them by majority vote"
         },
         {
           "name": "compare",
           "args": "[A] [B]",
-          "category": "Diff two targets (before/after a site, or A vs B): per-check verdict changes and score deltas",
-          "description": "[references/compare.md](references/compare.md)"
+          "category": "",
+          "description": "Diff two targets (before/after a site, or A vs B): per-check verdict changes and score deltas"
         },
         {
           "name": "learnings",
           "args": "[file]",
-          "category": "Review LEARNINGS.md candidates accumulated by real audits and turn accepted ones into rules, gates, laws or fixtures",
-          "description": "[references/learnings.md](references/learnings.md)"
+          "category": "",
+          "description": "Review LEARNINGS.md candidates accumulated by real audits and turn accepted ones into rules, gates, laws or fixtures"
         },
         {
           "name": "report",
           "args": "[file]",
-          "category": "Format an existing audit into a client-ready report, a self-contained HTML page, or PDF",
-          "description": "[references/report.md](references/report.md) + [references/html-report.md](references/html-report.md)"
+          "category": "",
+          "description": "Format an existing audit into a client-ready report, a self-contained HTML page, or PDF"
         }
       ]
     }

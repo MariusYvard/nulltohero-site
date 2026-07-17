@@ -8,8 +8,11 @@ import { PLUGIN } from "@/lib/facts";
 import data from "@/data/commands.json";
 
 export const metadata: Metadata = {
-  title: `All ${PLUGIN.commands} commands`,
-  description: `Every command in NullToHero: ${PLUGIN.perSkill.siteasy} for design, ${PLUGIN.perSkill.seo} for search, ${PLUGIN.perSkill.audit} for the scored audit, ${PLUGIN.perSkill.inspect} for the detector. One line each. Free, ${PLUGIN.licence}.`,
+  title: `All ${PLUGIN.commands} commands for Claude, one line each`,
+  description: `Every command in NullToHero: ${PLUGIN.perSkill.siteasy} for design, ${PLUGIN.perSkill.seo} for search, ${PLUGIN.perSkill.audit} for the scored audit, ${PLUGIN.perSkill.inspect} for the detector. One line each. Free, ${PLUGIN.licence}. Install in two lines.`,
+  // Self-referencing. Without this the root layout's canonical:"/" is inherited
+  // verbatim and this page declares the homepage as its canonical.
+  alternates: { canonical: "/commands/" },
   openGraph: {
     title: `NullToHero: all ${PLUGIN.commands} commands`,
     description: "One line each. Design, search, quality and the scored audit.",
@@ -94,7 +97,7 @@ export default function Commands() {
             <div className="mt-8">
               <Link
                 href="/journey"
-                className="inline-flex min-h-11 items-center rounded-md border border-line px-6 font-bold text-ink hover:bg-paper-high"
+                className="inline-flex min-h-12 items-center rounded-md border border-line px-6 font-bold text-ink hover:bg-paper-high"
               >
                 See the pipeline →
               </Link>

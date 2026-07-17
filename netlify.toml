@@ -25,9 +25,15 @@
     X-Frame-Options = "DENY"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
     Cross-Origin-Opener-Policy = "same-origin"
-    # Fonts are self-hosted, so no font CDN origin is allowed here. Satoshi and
-    # JetBrains Mono still come from Fontshare/Google — if those go away, drop the
-    # two font origins with them rather than leaving the holes open.
+    # Netlify redirects HTTP to HTTPS on its own, but a default you have not written
+    # down is a default that can change under you, and the first request of a fresh
+    # visit is the one that travels in clear. Two years, subdomains included, preload
+    # eligible. Note the consequence before touching it: with preload, browsers refuse
+    # plain HTTP to this host for the whole max-age, and there is no fast way back.
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    # Every face is served from /fonts now, so no font CDN origin is allowed anywhere:
+    # not here, not in the generated CSP. If a face ever comes back from a CDN, the hole
+    # comes back with it, deliberately, in scripts/csp-headers.mjs.
     # The CSP is NOT here on purpose. It carries a SHA-256 of every inline script this
     # build emits, and netlify.toml is read before the build runs, so it cannot know
     # them. scripts/csp-headers.mjs writes out/_headers from the artifact that ships.

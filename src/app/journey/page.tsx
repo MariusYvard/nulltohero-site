@@ -7,12 +7,21 @@ import { PLUGIN } from "@/lib/facts";
 import { PHASES, TAG_STYLE } from "@/lib/pipeline";
 
 export const metadata: Metadata = {
-  title: "The journey",
+  // "The journey" alone said nothing to anyone who had not already met the brand: no
+  // Claude, no plugin, no design. 24 characters of a 60-character budget, on a page
+  // whose whole job is to explain the pipeline.
+  title: "The journey: from a blank page to a scored site",
   // 160 chars or Google truncates it. The old copy ran to 187 and lost its own ending,
   // and no audit had noticed because they all read the home page. Interpolated, so it
   // moves with facts.ts: keep the tail short enough that PLUGIN.commands growing a
   // digit cannot push it back over.
+  // This one gets NO call to action, unlike the home's and /commands'. It already sits
+  // at 153 of the 160 available; the CTA was added here once and took it to 175, which
+  // is the exact truncation this comment was written to prevent. The budget is spent.
   description: `From a blank page to a site that passes review, in six corrections: research, structure, voice, the detector, search, the score. ${PLUGIN.commands} commands, ${PLUGIN.licence}.`,
+  // Self-referencing. Without this the root layout's canonical:"/" is inherited
+  // verbatim and this page declares the homepage as its canonical.
+  alternates: { canonical: "/journey/" },
   openGraph: {
     title: "Null to hero, in six corrections",
     description: "The pipeline, phase by phase: research before pixels, structure then rhythm, commit to a voice, face the detector, findable and fast, then score the whole thing.",
@@ -98,13 +107,13 @@ export default function Journey() {
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 href="/#install"
-                className="inline-flex min-h-11 items-center rounded-md bg-red-solid px-6 font-bold text-white hover:bg-red-deep"
+                className="inline-flex min-h-12 items-center rounded-md bg-red-solid px-6 font-bold text-white hover:bg-red-deep"
               >
                 Install in one line
               </Link>
               <Link
                 href="/commands"
-                className="inline-flex min-h-11 items-center rounded-md border border-line px-6 font-bold text-ink hover:bg-paper-high"
+                className="inline-flex min-h-12 items-center rounded-md border border-line px-6 font-bold text-ink hover:bg-paper-high"
               >
                 All {PLUGIN.commands} commands
               </Link>

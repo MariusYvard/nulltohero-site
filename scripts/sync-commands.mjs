@@ -34,10 +34,33 @@ if (!fs.existsSync(path.join(repo, ".claude-plugin", "plugin.json"))) {
 
 const version = JSON.parse(fs.readFileSync(path.join(repo, ".claude-plugin", "plugin.json"), "utf8")).version;
 
-// | `command [arg]` | Category | Description | Reference |
-const ROW = /^\|\s*`([a-z0-9-]+)([^`]*)`\s*\|([^|]*)\|([^|]*)\|/gim;
+/* Read the table's own header instead of assuming its shape.
+   The old parser hard-coded `| command | Category | Description | Reference |` and took
+   column 3 as the description. That is siteasy's shape. seo, inspect and audit use
+   `| Command | What it does | Reference |`, so for 32 of the 65 commands column 3 was the
+   REFERENCE, and the site shipped "[references/audit.md](references/audit.md)" as the
+   description of /seo audit — six of them byte-identical. It parsed 65 rows and failed
+   no check, because "did it parse" and "did it parse the right column" are not the same
+   question. The header answers the second one. */
+/* Split on unescaped pipes only. `report [url\|file\|generate]` puts an escaped pipe
+   INSIDE its command cell, so a naive split("|") shreds that row and silently drops the
+   command: the first run of this parser reported 18 seo commands where there are 19, and
+   64 total where facts.ts says 65. The count is the tell. Unescape after splitting, so
+   the JSON carries `[url|file|generate]` and not the markdown backslash. */
+const cells = (line) =>
+  line
+    .replace(/^\s*\|/, "")
+    .replace(/(?<!\\)\|\s*$/, "")
+    .split(/(?<!\\)\|/)
+    .map((c) => c.trim().replace(/\\\|/g, "|"));
+const findCol = (header, names) => header.findIndex((h) => names.includes(h.toLowerCase()));
 
-const out = { version, generatedFrom: "SKILL.md Commands tables", skills: [] };
+/* The date the site's facts last actually changed, which is the day this ran against a
+   plugin release. Not the build date: a rebuild with no content change is not a
+   modification, and `dateModified` that ticks up every deploy is a freshness claim the
+   site has not earned. sync-llms.mjs stamps today's date for llms.txt on every build;
+   this one is the honest source for structured data. */
+const out = { version, generatedAt: new Date().toISOString().slice(0, 10), generatedFrom: "SKILL.md Commands tables", skills: [] };
 let total = 0;
 
 for (const skill of SKILLS) {
@@ -50,22 +73,52 @@ for (const skill of SKILLS) {
   const section = md.split(/^## Commands/m)[1] || "";
   const body = section.split(/^## /m)[0] || "";
 
+  const rows = body.split("\n").filter((l) => /^\s*\|/.test(l));
+  if (rows.length < 3) {
+    console.error(`[sync-commands] no Commands table found in ${skill.id}/SKILL.md`);
+    process.exit(1);
+  }
+
+  const header = cells(rows[0]);
+  const iCmd = findCol(header, ["command"]);
+  const iDesc = findCol(header, ["description", "what it does"]);
+  const iCat = findCol(header, ["category"]);
+  if (iCmd === -1 || iDesc === -1) {
+    console.error(`[sync-commands] ${skill.id}/SKILL.md: cannot locate the command and description columns in header: ${rows[0].trim()}`);
+    console.error(`[sync-commands] add the new column name to findCol() rather than guessing an index.`);
+    process.exit(1);
+  }
+
   const seen = new Set();
   const commands = [];
-  for (const m of body.matchAll(ROW)) {
+  for (const row of rows.slice(2)) {
+    // slice(2) skips the header and its |---|---| separator
+    const c = cells(row);
+    const m = /^`([a-z0-9-]+)([^`]*)`/.exec(c[iCmd] ?? "");
+    if (!m) continue;
     const name = m[1].trim();
     if (seen.has(name)) continue;
     seen.add(name);
     commands.push({
       name,
       args: m[2].trim(),
-      category: m[3].trim(),
-      description: m[4].trim().replace(/\s+/g, " "),
+      category: iCat === -1 ? "" : c[iCat],
+      description: (c[iDesc] ?? "").replace(/\s+/g, " "),
     });
   }
 
   if (commands.length === 0) {
     console.error(`[sync-commands] parsed 0 commands from ${skill.id}/SKILL.md — the table shape changed, fix the parser`);
+    process.exit(1);
+  }
+
+  /* The check the old parser lacked. It is not enough to parse rows: a description that
+     is a reference link means the column mapping slid, and the site would ship it as
+     product copy. This is the exact failure that shipped to production. */
+  const linkish = commands.filter((c) => /^\[?references\//.test(c.description) || c.description === "");
+  if (linkish.length) {
+    console.error(`[sync-commands] ${skill.id}: ${linkish.length} description(s) look like a reference link or are empty, e.g. ${linkish[0].name} -> "${linkish[0].description}"`);
+    console.error(`[sync-commands] the description column is misidentified. Header was: ${rows[0].trim()}`);
     process.exit(1);
   }
 
@@ -75,6 +128,23 @@ for (const skill of SKILLS) {
 }
 
 out.total = total;
+
+/* Cross-check the parse against the counts a human maintains in src/lib/facts.ts.
+   Two independent readings of the same plugin: if they disagree, one of them is wrong
+   and neither this script nor the human gets to decide which silently. The first run of
+   the header-driven parser produced 64 where facts says 65, and that gap is the only
+   reason the dropped `report` command was ever noticed. A parser that reports its own
+   total and nothing else can be confidently wrong. */
+const expected = { siteasy: 33, seo: 19, audit: 10, inspect: 3 };
+const drift = out.skills
+  .filter((s) => expected[s.id] !== undefined && s.commands.length !== expected[s.id])
+  .map((s) => `/${s.id}: parsed ${s.commands.length}, facts.ts says ${expected[s.id]}`);
+if (drift.length) {
+  console.error(`[sync-commands] count mismatch against src/lib/facts.ts:`);
+  for (const d of drift) console.error(`  ${d}`);
+  console.error(`[sync-commands] either the parser is dropping rows or facts.ts is stale. Fix one, do not ignore this.`);
+  process.exit(1);
+}
 
 const dest = path.join(process.cwd(), "src", "data", "commands.json");
 fs.mkdirSync(path.dirname(dest), { recursive: true });

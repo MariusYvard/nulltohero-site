@@ -12,12 +12,19 @@ import {
   useReducedMotion,
   type MotionValue,
 } from "motion/react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
+import dynamic from "next/dynamic";
 import { AnimatedSpan, Terminal, TypingAnimation } from "@/components/ui/terminal";
 import { ScrollHint } from "@/components/ScrollHint";
 import { PHASES, type Phase } from "@/lib/pipeline";
 import { PLUGIN, SPEC_LINE } from "@/lib/facts";
+
+/* three.js and @react-three/fiber, in their own chunk, fetched when show3d flips.
+   Statically imported they landed in the home page's own <script>: 857 KB raw, on every
+   load, for act 6 of a ~940vh track. show3d already deferred the mount, but the import
+   graph is fixed at build time and a useState cannot unspend a download.
+   ssr:false is required, not stylistic: this touches document and WebGL, and the site
+   is a static export. */
+const Wordmark3D = dynamic(() => import("@/components/Wordmark3D"), { ssr: false });
 
 /* The hand for act 0: [glyph, start s, duration s].
    Deliberately not metronomic. Capitals carry three strokes and take roughly twice
@@ -224,82 +231,20 @@ function Annotation({ sp, k, tag, txt, l, t }: { sp: MotionValue<number>; k: num
   );
 }
 
-/* Act 6 — the wordmark extrudes from 2D into 3D. */
-function WordMesh({ active, progress }: { active: boolean; progress: MotionValue<number> }) {
-  const group = useRef<THREE.Group>(null);
-  const meshes = useRef<(THREE.Mesh | null)[]>([]);
-  const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
-  useEffect(() => {
-    let alive = true;
-    const make = () => {
-      if (!alive) return;
-      const w = 1024, h = 300;
-      const c = document.createElement("canvas");
-      c.width = w;
-      c.height = h;
-      const ctx = c.getContext("2d")!;
-      ctx.font = '900 150px Satoshi, system-ui, sans-serif';
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = "#ffffff";
-      ctx.fillText("NullToHero", w / 2, h / 2 + 6);
-      const t = new THREE.CanvasTexture(c);
-      t.minFilter = THREE.LinearFilter;
-      t.anisotropy = 4;
-      setTexture(t);
-    };
-    if (document.fonts?.load) document.fonts.load("900 150px Satoshi").then(make, make);
-    else make();
-    return () => { alive = false; };
-  }, []);
-
-  const layers = useMemo(() => {
-    const light = new THREE.Color(0.98, 0.97, 0.95);
-    const red = new THREE.Color(0.8, 0.22, 0.13);
-    return Array.from({ length: 20 }, (_, i) => {
-      const f = i / 19;
-      let col: THREE.Color;
-      if (i === 0) col = light;
-      else if (i < 4) col = red;
-      else col = red.clone().multiplyScalar(1 - f * 0.85);
-      return { color: col, base: i === 0 ? 1 : 0.97 };
-    });
-  }, []);
-
-  useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    const ex = Math.min(1, Math.max(0, progress.get()));
-    if (group.current) {
-      group.current.rotation.y = Math.sin(t * 0.4) * 0.26 * ex + (active ? 0 : -0.4);
-      group.current.rotation.x = Math.cos(t * 0.33) * 0.05 * ex;
-      group.current.position.y = 0.72 + Math.sin(t * 0.6) * 0.04 * ex;
-    }
-    for (let i = 0; i < meshes.current.length; i++) {
-      const m = meshes.current[i];
-      if (!m) continue;
-      m.position.z = -(i / 19) * 1.2 * ex;
-      (m.material as THREE.MeshBasicMaterial).opacity = i === 0 ? 1 : 0.97 * (0.25 + 0.75 * ex);
-    }
-  });
-
-  if (!texture) return null;
-  return (
-    <group ref={group}>
-      {layers.map((l, i) => (
-        <mesh key={i} ref={(el) => { meshes.current[i] = el; }} position={[0, 0, 0]}>
-          <planeGeometry args={[4.6, 1.35]} />
-          <meshBasicMaterial map={texture} transparent depthWrite={false} opacity={l.base} color={l.color} side={THREE.DoubleSide} />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
 /* The slop page. Rendered twice (act 3 live, act 4 frozen under the redlines),
-   so the hard cut between them lands on identical pixels and reads as a freeze. */
+   so the hard cut between them lands on identical pixels and reads as a freeze.
+
+   aria-hidden, and that is not a detail. Every act ships in the initial HTML — only
+   clip-path and opacity decide what a human sees — so in document order this parody
+   ("Unleash the power of AI-driven synergy, instantly.") sat BEFORE the real h1, twice,
+   unmarked. A snippet heuristic reading the first body text had a clean path to quoting
+   the joke as the product's actual pitch, and a screen reader announced a fake nav bar
+   as if it were this site's. It is a specimen the page is examining, not a claim the
+   page is making: it belongs to the eye only. Act 0's decorative wordmark already did
+   this; the mocks were the ones that got missed. */
 function SlopPage({ orbY, orbScale }: { orbY: MotionValue<string>; orbScale?: MotionValue<number> }) {
   return (
-    <>
+    <div aria-hidden="true" className="contents">
       <motion.div
         style={{ y: orbY, scale: orbScale }}
         className="pointer-events-none absolute left-1/2 top-[6%] h-[62vw] max-h-[760px] w-[62vw] max-w-[760px] -translate-x-1/2 rounded-full [background:radial-gradient(circle,rgba(139,92,246,0.5),rgba(236,72,153,0.1)_70%)] blur-[64px]"
@@ -316,7 +261,7 @@ function SlopPage({ orbY, orbScale }: { orbY: MotionValue<string>; orbScale?: Mo
           {[0, 1, 2].map((n) => <span key={n} className="h-[72px] flex-1 rounded-[10px] border border-white/10 bg-white/[0.06] backdrop-blur" />)}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -565,7 +510,17 @@ export function HeroScrolly() {
         {/* bg-white moved onto an animatable backgroundColor: the surface has to
             arrive over the terminal's screen rather than blink into place. */}
         <Act sp={sp} i={2} clip={clip2} bgColor={bg2} enter={{ scale: 0.9 }} under={{ scale: 0.94 }}>
-          <motion.div style={{ clipPath: renderClip }} className="w-[min(84vw,620px)] font-serif text-black">
+          {/* aria-hidden AND client-only, which are two different fixes for two different
+              readers. aria-hidden stops a screen reader announcing a fake page as this
+              site's. It does nothing for text extraction: an answer engine reads the DOM,
+              not the accessibility tree, and "Welcome to my website. This is a paragraph
+              of text." was the first body prose in the served document. Gating on
+              `mounted` keeps it out of the HTML entirely, so the only prose a non-JS
+              reader gets is the real narration in the sr-only list. Costs nothing
+              visually: mounted flips at hydration, and this act is clipped out of sight
+              at scroll 0 regardless. The terminal in act 1 already worked this way. */}
+          {mounted && (
+          <motion.div aria-hidden="true" style={{ clipPath: renderClip }} className="w-[min(84vw,620px)] font-serif text-black">
             <p className="mb-4 text-[42px] font-bold">NullToHero</p>
             <p className="mb-4 text-lg">Welcome to my website. This is a paragraph of text. Click the button below to learn more about our services.</p>
             <span className="inline-block border-2 border-[#cfcfcf] bg-[#e2e2e2] px-3.5 py-1 font-sans text-[15px]" style={{ borderStyle: "outset" }}>Button</span>
@@ -575,18 +530,19 @@ export function HeroScrolly() {
               <li>Feature three</li>
             </ul>
           </motion.div>
+          )}
         </Act>
 
         {/* 3 — SLOP: the effects iris open out of the plain page. */}
         <Act sp={sp} i={3} clip={clip3} enter={{ scale: 1.18 }} className="bg-[#0d0921]">
-          <SlopPage orbY={orbY} orbScale={bloom} />
+          {mounted && <SlopPage orbY={orbY} orbScale={bloom} />}
         </Act>
 
         {/* 4 — ANALYSIS: hard cut onto the same frame, which then freezes and desaturates
             while the redlines stamp in. No fade: the detector interrupts. */}
         <Act sp={sp} i={4} hardCut under={{ x: -60 }} className="bg-[#0d0921]">
           <motion.div style={{ filter: filter4, opacity: 0.55 }} className="pointer-events-none absolute inset-0 grid place-items-center">
-            <SlopPage orbY={orbY} />
+            {mounted && <SlopPage orbY={orbY} />}
           </motion.div>
           <div className="absolute inset-0">
             {ANNOTS.map((a, k) => (
@@ -603,7 +559,7 @@ export function HeroScrolly() {
             <p className="mb-[22px] max-w-[42ch] text-lg text-ink-soft">A Claude plugin that gives every page the judgment layer.</p>
             {/* Real link, unlike the mock CTAs in acts 2 and 3. This is the corrected
                 page: if a reader reaches for it, they're reaching for the real thing. */}
-            <a href="#install" className="inline-flex min-h-11 items-center rounded bg-red-solid px-[22px] font-bold text-white hover:bg-red-deep">
+            <a href="#install" className="inline-flex min-h-12 items-center rounded bg-red-solid px-[22px] font-bold text-white hover:bg-red-deep">
               Install in one line →
             </a>
             <div className="mt-[7vh] font-mono text-sm text-ink-faint">{SPEC_LINE}</div>
@@ -619,26 +575,7 @@ export function HeroScrolly() {
 
         {/* 6 — HERO: the frame opens like a lens onto the black. 3D wordmark + pro copy. */}
         <Act sp={sp} i={6} clip={clip6} enter={{ scale: 1.14 }} className="bg-[oklch(15%_0.006_265)]">
-          {/* The word gets the top half of a phone, the copy gets the bottom. Full frame
-              from sm up, unchanged. On a phone the h1 wraps to four lines and the word is
-              centred, so they occupied the same pixels: white extruded type under white
-              display type, and neither could be read. Boxing the canvas is what moves the
-              word; the camera stays where it was measured. */}
-          {show3d && (
-            <div className="absolute inset-x-0 top-0 h-[46%] sm:inset-0 sm:h-full">
-            <Canvas
-              className="!absolute inset-0"
-              camera={{ position: [0, 0, 7], fov: 28 }}
-              dpr={[1, 2]}
-              gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
-              onCreated={({ gl }) => {
-                gl.domElement.addEventListener("webglcontextlost", (e) => e.preventDefault(), false);
-              }}
-            >
-              <WordMesh active={idx === 6} progress={extrude} />
-            </Canvas>
-            </div>
-          )}
+          {show3d && <Wordmark3D active={idx === 6} progress={extrude} />}
           <motion.div style={{ y: copyY, opacity: copyOp }} className="pointer-events-none absolute inset-x-0 bottom-[7vh] mx-auto max-w-6xl px-6 sm:bottom-[12vh]">
             <p className="font-mono text-xs uppercase tracking-widest text-red sm:text-sm">Claude plugin · v{PLUGIN.version} · {PLUGIN.licence}</p>
             <h1 id="hero-title" className="mt-3 text-3xl font-black leading-[1.05] tracking-tight sm:mt-4 sm:text-5xl sm:leading-[1.02] md:text-6xl">
@@ -656,8 +593,8 @@ export function HeroScrolly() {
               <span>corrected. committed. calm.</span>
             </p>
             <div className="pointer-events-auto mt-7 flex flex-wrap gap-3">
-              <a href="#install" className="inline-flex min-h-11 items-center rounded-md bg-red-solid px-6 font-bold text-white hover:bg-red-deep">Install in one line</a>
-              <a href="/journey" className="inline-flex min-h-11 items-center rounded-md border border-line px-6 font-bold text-ink hover:bg-paper-high">Watch the journey</a>
+              <a href="#install" className="inline-flex min-h-12 items-center rounded-md bg-red-solid px-6 font-bold text-white hover:bg-red-deep">Install in one line</a>
+              <a href="/journey" className="inline-flex min-h-12 items-center rounded-md border border-line px-6 font-bold text-ink hover:bg-paper-high">Watch the journey</a>
             </div>
           </motion.div>
         </Act>
@@ -677,8 +614,30 @@ export function HeroScrolly() {
             Not a heading. The titles swap as you scroll, and a document outline whose
             h2 changes identity under the reader is worse than no h2: the hero's
             outline is its h1, in act 6. */}
+        {/* The same seven beats, as static text, for everything that is not an eye.
+            The card below renders NARRATION[idx], and idx only leaves 0 when a real
+            scroll listener fires in a real viewport: so acts 1 to 6 reached the served
+            HTML never. The mechanics of the product and five of its six phases were
+            visible to humans and absent for crawlers, on the sitemap's priority-1 URL —
+            the exact inversion of the point. No new copy: same array, rendered whole.
+            This list is also the accessible equivalent of the whole hero, which is why
+            the visual card is aria-hidden rather than duplicated into a screen reader
+            one act at a time. */}
+        <ul className="sr-only">
+          {NARRATION.map((a) => (
+            <li key={a.n}>
+              <b>
+                {a.n} — {a.caption}
+              </b>
+              {a.title ? ` ${a.title}. ${a.short}` : null}
+              {a.commands?.length ? ` Commands: ${a.commands.join(", ")}.` : null}
+            </li>
+          ))}
+        </ul>
+
         <motion.div
           key={mounted ? idx : 0}
+          aria-hidden="true"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
@@ -717,13 +676,19 @@ export function HeroScrolly() {
                   </div>
                 </div>
                 {/* pointer-events-auto: the card's container is none, so the whole hero
-                    stays scrollable and only this button takes the tap. min-h-11 is
-                    L-TOUCH-1 (44px), which the 12px label alone would miss by half. */}
+                    stays scrollable and only this button takes the tap. min-h-12 is 48px,
+                    Google's mobile guideline; the 12px label alone would miss the WCAG
+                    floor by half.
+                    tabIndex -1 and no aria: the card is aria-hidden, and a focusable
+                    control inside a hidden subtree is a trap — focus lands somewhere a
+                    screen reader cannot describe. Nothing is lost by removing it: it
+                    reveals `short` and the chips, which the sr-only list above already
+                    states in full, unconditionally. */}
                 <button
                   type="button"
+                  tabIndex={-1}
                   onClick={() => setOpenCard((o) => !o)}
-                  aria-expanded={openCard}
-                  className="pointer-events-auto -mb-2 mt-1 inline-flex min-h-11 items-center gap-1.5 font-mono text-xs text-red sm:hidden"
+                  className="pointer-events-auto -mb-2 mt-1 inline-flex min-h-12 items-center gap-1.5 font-mono text-xs text-red sm:hidden"
                 >
                   {openCard ? "less" : "what this means"}
                   <span aria-hidden="true">{openCard ? "↑" : "↓"}</span>

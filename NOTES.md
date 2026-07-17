@@ -2,6 +2,28 @@
 
 Site refait en Next.js 16 (export statique) + Tailwind 4 + motion (Framer Motion) + React Three Fiber. Thème sombre minimal, accent rouge correction. Le hero est un scrollytelling en 7 actes (`src/components/HeroScrolly.tsx`).
 
+## Audit SEO du 17/07/2026 : ce qu'il a appris
+
+Score de départ 62/100, les 18 points du plan traités. Détail dans `ACTION-PLAN.md`. Ce qui mérite d'être retenu ici, parce que ce sont des pièges, pas des tâches :
+
+**Le canonique héritait en silence.** `layout.tsx` posait `alternates: { canonical: "/" }` et Next l'hérite tel quel dans toute route qui ne le surcharge pas. `/journey/` et `/commands/` déclaraient donc la home comme leur canonique, pendant que leur propre `og:url` et leur BreadcrumbList disaient l'inverse, sur la même page. Ça avait l'air correct parce que le chemin de la home **est** `/`. **Toute route nouvelle doit poser son `alternates.canonical`.**
+
+**Le parser de commandes lisait la bonne colonne par accident.** `siteasy/SKILL.md` a `| Command | Category | Description | Reference |`, les trois autres ont `| Command | What it does | Reference |`. L'ancien parser prenait la colonne 3 en dur : 32 commandes sur 65 affichaient `[references/audit.md](references/audit.md)` comme description, six à l'octet près. Il parsait 65 lignes et ne ratait aucun contrôle, parce que « ça a parsé » et « ça a parsé la bonne colonne » ne sont pas la même question. Le parser lit l'en-tête maintenant, et échoue si une description ressemble à un lien.
+
+**Et le contrôle croisé avec `facts.ts` a servi le jour même.** Le parser réécrit rendait 64 commandes au lieu de 65 : la ligne perdue était `report [url\|file\|generate]`, un **pipe échappé dans la cellule**, qu'un `split("|")` naïf déchire. Sans ce compte confronté à une source indépendante, une commande disparaissait du site sans un bruit. Un script qui rapporte son propre total peut être confiant et faux.
+
+**Le hero était rendu invisible aux machines par le travail de narration.** `NARRATION[mounted ? idx : 0]` : `idx` ne bouge qu'au scroll, donc les actes 1 à 6 n'atteignaient jamais le HTML servi. Le fond avait été remonté dans les actes pour qu'un humain le lise, ce qui l'a retiré à tout ce qui ne scrolle pas. Les sept actes sont maintenant rendus en liste `sr-only` inconditionnelle, qui sert à la fois de version crawlable et d'équivalent accessible (d'où la carte visuelle en `aria-hidden`).
+
+**Les maquettes parodiques étaient les premières phrases du document.** "Welcome to my website...", "Unleash the power of AI-driven synergy, instantly." arrivaient avant le h1, non marquées. `aria-hidden` règle le lecteur d'écran et **rien d'autre** : un moteur de réponse lit le DOM. Elles sont donc aussi client-only (`{mounted && ...}`), comme le terminal l'était déjà. Zéro occurrence dans le HTML servi.
+
+**Un gating de montage n'est pas un gating de téléchargement.** `show3d` différait le canvas, mais `HeroScrolly` importait `Canvas` statiquement : le graphe d'import est figé au build et aucun `useState` ne dé-dépense un téléchargement. three.js partait en `<script async>` sur la home, 857 Ko, pour l'acte 6 d'une piste de 940vh. Sorti dans `Wordmark3D.tsx` + `next/dynamic({ ssr: false })` : la home passe de **1623 à 803 Ko** de JS.
+
+**`fonts.googleapis.com` est injoignable depuis la machine de Marius** (VPN). Le site rendait donc sans police mono chez son auteur, pendant qu'un audit notait le même code « correct ». Satoshi et JetBrains Mono sont auto-hébergés (`/fonts`, 160 Ko), ce qui supprime la dépendance au lieu de la déplacer, referme la CSP à `style-src 'self'` / `font-src 'self'` et rend le build indépendant du réseau.
+
+**`next/font` n'a pas été appliqué, et c'est un arbitrage.** Il donnerait l'appariement des métriques de repli, mais il renomme les familles en identifiant haché, or `Wordmark3D` cuit sa texture via `document.fonts.load("900 150px Satoshi")` : une famille renommée y cuirait la police de repli en silence. Les noms de famille sont conservés. Le reflow au swap reste théoriquement possible, en pratique réduit à une requête même origine préchargée. À trancher avec le wordmark sous les yeux.
+
+Au passage : Fontshare ne publie pas Satoshi en 800, l'ancienne feuille le demandait depuis toujours sans jamais le recevoir.
+
 ## Narration : les actes portent les phases
 
 Fait le 16/07/2026. Reproche de Marius : "une personne qui arrive sur le site ne comprend pas ce qui lui arrive", "c'est juste un enchaînement de NullToHero". Exact, et la cause n'était pas la forme.

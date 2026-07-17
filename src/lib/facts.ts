@@ -46,6 +46,8 @@ export const SITE_URL = "https://nulltohero.netlify.app";
 export const PLUGIN = {
   /** Read from the plugin's own repo by sync-commands.mjs. Never type it here. */
   version: commands.version,
+  /** The day the facts last changed, stamped by sync-commands.mjs. Not the build date. */
+  updated: commands.generatedAt,
   skills: 4,
   commands: 65,
   referenceDocs: 117,
