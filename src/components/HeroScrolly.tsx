@@ -325,6 +325,12 @@ export function HeroScrolly() {
   const [idx, setIdx] = useState(0);
   const [mounted, setMounted] = useState(false);
   const [show3d, setShow3d] = useState(false);
+  /* Phone only: the narration card opens on demand. At 400px on a desktop it is a note
+     in the margin and the specimen keeps the screen; at 88vw on a 375px phone it is a
+     curtain — it covered the very redlines act 4 exists to show. Closed, it is a caption
+     and a title. Deliberately NOT keyed to idx: someone who opens it at act 2 wants it
+     open at act 3, and re-tapping at every wipe would be its own defect. */
+  const [openCard, setOpenCard] = useState(false);
 
   const reduce = useReducedMotion();
 
@@ -473,7 +479,13 @@ export function HeroScrolly() {
 
   return (
     <section ref={trackRef} data-act={idx} className="relative h-[940vh]" aria-labelledby="hero-title">
-      <div className="sticky top-0 h-screen overflow-hidden">
+      {/* 100svh, not 100vh. On mobile Safari `vh` is the LARGE viewport — the size the
+          page would be if the toolbar were hidden — so the stage ran taller than the
+          visible area and everything anchored to its bottom (the narration card's chips)
+          sat underneath the browser chrome. `svh` is the small viewport, always visible.
+          Not `dvh`: that one changes as the toolbar hides on scroll, which would resize
+          the stage mid-scrub. Identical to `vh` on desktop. */}
+      <div className="sticky top-0 h-[100svh] overflow-hidden">
         {/* 0 — NULL: a blank sheet, and the word writes itself onto it.
             The writing is time-based, NOT scroll-scrubbed: a hand has its own rhythm,
             and scrubbing would tie the pen's speed to the reader's wheel. Once written
@@ -607,7 +619,13 @@ export function HeroScrolly() {
 
         {/* 6 — HERO: the frame opens like a lens onto the black. 3D wordmark + pro copy. */}
         <Act sp={sp} i={6} clip={clip6} enter={{ scale: 1.14 }} className="bg-[oklch(15%_0.006_265)]">
+          {/* The word gets the top half of a phone, the copy gets the bottom. Full frame
+              from sm up, unchanged. On a phone the h1 wraps to four lines and the word is
+              centred, so they occupied the same pixels: white extruded type under white
+              display type, and neither could be read. Boxing the canvas is what moves the
+              word; the camera stays where it was measured. */}
           {show3d && (
+            <div className="absolute inset-x-0 top-0 h-[46%] sm:inset-0 sm:h-full">
             <Canvas
               className="!absolute inset-0"
               camera={{ position: [0, 0, 7], fov: 28 }}
@@ -619,13 +637,14 @@ export function HeroScrolly() {
             >
               <WordMesh active={idx === 6} progress={extrude} />
             </Canvas>
+            </div>
           )}
-          <motion.div style={{ y: copyY, opacity: copyOp }} className="pointer-events-none absolute inset-x-0 bottom-[12vh] mx-auto max-w-6xl px-6">
-            <p className="font-mono text-sm uppercase tracking-widest text-red">Claude plugin · v{PLUGIN.version} · {PLUGIN.licence}</p>
-            <h1 id="hero-title" className="mt-4 text-5xl font-black leading-[1.02] tracking-tight sm:text-6xl">
+          <motion.div style={{ y: copyY, opacity: copyOp }} className="pointer-events-none absolute inset-x-0 bottom-[7vh] mx-auto max-w-6xl px-6 sm:bottom-[12vh]">
+            <p className="font-mono text-xs uppercase tracking-widest text-red sm:text-sm">Claude plugin · v{PLUGIN.version} · {PLUGIN.licence}</p>
+            <h1 id="hero-title" className="mt-3 text-3xl font-black leading-[1.05] tracking-tight sm:mt-4 sm:text-5xl sm:leading-[1.02] md:text-6xl">
               Every page is born null.<br /><span className="text-red">This one corrects itself.</span>
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-ink-soft">
+            <p className="mt-4 max-w-xl text-base text-ink-soft sm:mt-5 sm:text-lg">
               AI can already build your website. It can&apos;t tell you it&apos;s ugly. NullToHero gives Claude the judgment layer.
             </p>
             {/* The PASS that act 5 used to wear. Act 4 stamps FAIL and WARN on the
@@ -676,22 +695,39 @@ export function HeroScrolly() {
               );
             }
             return (
-              <div className="rounded-lg border border-line bg-paper/85 p-5 backdrop-blur-md">
+              <div className="rounded-lg border border-line bg-paper/85 p-4 backdrop-blur-md sm:p-5">
                 <p className="font-mono text-sm text-red">
                   {a.n} — {a.caption}
                 </p>
                 <p className="mt-2 text-xl font-bold tracking-tight text-ink">{a.title}</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{a.short}</p>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {a.commands?.map((c) => (
-                    <code
-                      key={c}
-                      className="rounded border border-line px-1.5 py-0.5 font-mono text-xs text-ink-faint"
-                    >
-                      {c}
-                    </code>
-                  ))}
+                {/* Below sm this is what the toggle reveals. From sm up there is no toggle
+                    and no hiding: the class list, not a second render path, so the two
+                    breakpoints can never drift apart. */}
+                <div className={openCard ? "" : "hidden sm:block"}>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{a.short}</p>
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {a.commands?.map((c) => (
+                      <code
+                        key={c}
+                        className="rounded border border-line px-1.5 py-0.5 font-mono text-xs text-ink-faint"
+                      >
+                        {c}
+                      </code>
+                    ))}
+                  </div>
                 </div>
+                {/* pointer-events-auto: the card's container is none, so the whole hero
+                    stays scrollable and only this button takes the tap. min-h-11 is
+                    L-TOUCH-1 (44px), which the 12px label alone would miss by half. */}
+                <button
+                  type="button"
+                  onClick={() => setOpenCard((o) => !o)}
+                  aria-expanded={openCard}
+                  className="pointer-events-auto -mb-2 mt-1 inline-flex min-h-11 items-center gap-1.5 font-mono text-xs text-red sm:hidden"
+                >
+                  {openCard ? "less" : "what this means"}
+                  <span aria-hidden="true">{openCard ? "↑" : "↓"}</span>
+                </button>
               </div>
             );
           })()}

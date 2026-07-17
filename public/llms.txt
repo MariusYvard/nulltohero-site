@@ -24,7 +24,7 @@
 - Deterministic rules: 71 in inspect-rules.csv, each with a severity, a good example and a bad one
 - Numeric laws: 16 with stable ids (L-MOTION-*, L-TOUCH-*, L-TYPE-*, L-CONTRAST-1, L-PERF-*, L-WEBGL-*)
 - Install: /plugin marketplace add MariusYvard/NullToHero then /plugin install null-to-hero@null-to-hero-marketplace
-- Last updated: 2026-07-16
+- Last updated: 2026-07-17
 
 ## What makes it different
 - Verdicts, not vibes: every finding cites a rule id and a measured value, and the audit score is arithmetic a reader can recompute from the verdicts rather than a number picked by feel.
