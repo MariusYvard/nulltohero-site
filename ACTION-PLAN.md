@@ -95,14 +95,14 @@ Au passage : Fontshare ne publie pas Satoshi en 800. L'ancienne feuille le deman
 
 ## Basse
 
-- **HSTS** : `max-age=63072000; includeSubDomains; preload` dans `netlify.toml`, avec la conséquence écrite à côté (avec `preload`, plus de HTTP en clair sur ce host pendant deux ans, et pas de retour rapide).
+- **HSTS** : posé dans `netlify.toml` à `max-age=63072000`, **mais mesuré en ligne à `max-age=31536000; includeSubDomains; preload`**. Netlify pose son propre HSTS et gagne sur le fichier : le header existe (le constat d'audit disait « aucun »), la valeur est celle de la plateforme, pas la mienne. Un an au lieu de deux, ce qui est sans conséquence pratique. Écrit ici plutôt que présenté comme un réglage qui a pris.
 - **Nœud WebSite** : ajouté, sans `SearchAction` (il n'y a pas de recherche sur le site, en revendiquer une serait faux).
 - **Apache 2.0** : lié vers la licence dans le pied de page. Son URL réelle n'existait que dans le JSON-LD, où aucun lecteur ne va.
 - **Phrase sur l'auteur** : ajoutée. Il était nommé partout et présenté nulle part.
 - **Ligne GitHub issues** : ajoutée. Le canal existait déjà, rien ne le disait.
 - **Cibles tactiles** : `min-h-11` (44px) vers `min-h-12` (48px), 10 occurrences, plus du padding vertical sur les liens de pied de page qui n'en avaient aucun.
 - **Catégorie nommée** : « A Claude Code plugin for design, SEO and front-end quality review » dans le pied de page. Version minimale et assumée de `competitor-pages` : **pas de page de comparaison**. Nommer les manques d'un concurrent sur son propre domaine est une affirmation qu'il faut ensuite maintenir vraie, et il n'y a pas de matrice honnête à construire sans les avoir testés. À faire avec toi si tu le veux.
-- **Redirections sans slash final** : à vérifier en ligne après déploiement, ce n'est pas mesurable depuis `out/`.
+- **Redirections sans slash final** : vérifiées en ligne, rien à faire. `/journey` rend **301** vers `/journey/`, `/commands` **301** vers `/commands/`, et la forme canonique rend 200. Pas de contenu dupliqué : le doute de l'audit est levé par la mesure, pas par un correctif.
 
 **WCAG 2.2 non lié** : la mention n'existe que dans les descriptions de commandes, qui sont des **données générées** depuis les SKILL.md du plugin. Y injecter un lien demanderait un linkifier dans le rendu, pour une occurrence. Le besoin de fond (« aucune citation sortante ») est couvert par le lien Apache. Écarté volontairement.
 
