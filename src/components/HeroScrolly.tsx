@@ -136,12 +136,20 @@ const E_DRIFT = cubicBezier(0.16, 1, 0.3, 1);
 
 type Move = { x?: number; y?: number; scale?: number; rotate?: number };
 
-const ANNOTS: [string, string, string, string][] = [
-  ["FAIL", "gradient text on a heading that has to be read", "8%", "12%"],
-  ["FAIL", "body set at 13px, the floor is 16px", "58%", "30%"],
-  ["FAIL", "no visible focus ring on the only CTA", "10%", "58%"],
-  ["WARN", "three identical cards: a template, not a decision", "56%", "72%"],
-  ["FAIL", "font chosen by nobody, for no reason", "30%", "86%"],
+/* [tag, text, left, top, mobile top].
+   The left/top pair scatters the stamps across the specimen the way a marked-up print
+   looks, and it was tuned at desktop width only. At 375px it fell apart twice: a stamp
+   at left 58% starts at 217px and runs up to 280px wide, so it ended 122px outside the
+   viewport, and the two lowest ones (72%, 86%) sat underneath the narration card. On a
+   phone every stamp goes to a single left margin and takes the fifth column instead:
+   the mobile tops compress the same five beats into the top 60%, which is the part of
+   the screen the card does not own. Same stamps, same order, same subject. */
+const ANNOTS: [string, string, string, string, string][] = [
+  ["FAIL", "gradient text on a heading that has to be read", "8%", "12%", "8%"],
+  ["FAIL", "body set at 13px, the floor is 16px", "58%", "30%", "22%"],
+  ["FAIL", "no visible focus ring on the only CTA", "10%", "58%", "35%"],
+  ["WARN", "three identical cards: a template, not a decision", "56%", "72%", "47%"],
+  ["FAIL", "font chosen by nobody, for no reason", "30%", "86%", "60%"],
 ];
 
 /* A full-page act. `clip` wipes it in; `enter`/`under` drift its content so the
@@ -193,7 +201,14 @@ function Act({
       className={`absolute inset-0 overflow-hidden ${className ?? ""}`}
       style={{ clipPath: clip, backgroundColor: bgColor, opacity: vis, pointerEvents: pe, zIndex: i, willChange: "clip-path" }}
     >
-      <motion.div className="grid h-full w-full place-items-center" style={{ x, y, scale, rotate, willChange: "transform" }}>
+      {/* pb-48 on a phone, nothing from sm up.
+          The narration card owns the bottom 182px of a 667px screen (24px of offset plus
+          158px at its tallest), and every act centres its specimen in the full height, so
+          the card landed on the mock's own content: it covered "Feature two" on act 2 and
+          the last redlines on act 4. 192px of bottom padding centres the specimen in what
+          is left instead. Desktop is untouched: there the card is a 400px note in the
+          margin of a 1536px viewport and nothing collides. */}
+      <motion.div className="grid h-full w-full place-items-center pb-48 sm:pb-0" style={{ x, y, scale, rotate, willChange: "transform" }}>
         {children}
       </motion.div>
     </motion.div>
@@ -201,15 +216,17 @@ function Act({
 }
 
 /* One redline that slams in like a stamp (overshoot settle), staggered by index. */
-function Annotation({ sp, k, tag, txt, l, t }: { sp: MotionValue<number>; k: number; tag: string; txt: string; l: string; t: string }) {
+function Annotation({ sp, k, tag, txt, l, t, mt }: { sp: MotionValue<number>; k: number; tag: string; txt: string; l: string; t: string; mt: string }) {
   const start = B[4] + 0.012 + k * 0.019;
   const opacity = useTransform(sp, [start, start + 0.014], [0, 1]);
   const scale = useTransform(sp, [start, start + 0.06], [1.9, 1], { ease: backOut });
   const rotate = useTransform(sp, [start, start + 0.06], [k % 2 ? 10 : -10, k % 2 ? 0.8 : -0.8], { ease: backOut });
   return (
     <motion.span
-      style={{ opacity, scale, rotate, left: l, top: t, transformOrigin: "center" }}
-      className="absolute flex max-w-[280px] items-baseline gap-2 rounded border border-line bg-paper-high px-2.5 py-1.5 font-mono text-xs text-ink shadow-xl"
+      /* left/top as custom properties, not as inline left/top: an inline style cannot
+         carry a media query, and these two positions have to differ by breakpoint. */
+      style={{ opacity, scale, rotate, transformOrigin: "center", ["--ax" as string]: l, ["--ay" as string]: t, ["--my" as string]: mt }}
+      className="absolute left-4 top-[var(--my)] flex max-w-[min(280px,calc(100vw-2rem))] items-baseline gap-2 rounded border border-line bg-paper-high px-2.5 py-1.5 font-mono text-xs text-ink shadow-xl sm:left-[var(--ax)] sm:top-[var(--ay)] sm:max-w-[280px]"
     >
       {/* Staging, not chrome. These stamps depict an audit overlay landing on the slop
           page, so they are drawn the way such an overlay looks rather than the way this
@@ -492,14 +509,22 @@ export function HeroScrolly() {
 
         {/* 1 — TERMINAL: the blind lands, the command types itself. */}
         <Act sp={sp} i={1} clip={clip1} enter={{ y: 40 }} under={{ scale: 1.06 }} className="bg-[oklch(19%_0.012_265)]">
+          {/* Type sized to the box, not to the desktop.
+              The box is w-[min(86vw,660px)] and the pre inside it has p-4, so a phone at
+              375px leaves 290px of line. JetBrains Mono advances exactly 0.6em per glyph:
+              the command ran 34 x 16 x 0.6 = 326px and the wordmark 19 glyphs at 18px plus
+              0.4em of tracking = 342px. Both walked out of their own terminal, and what a
+              phone actually read was `build me a landing pag` and `N U L L T O H E`. At
+              14px the command measures 286px and fits, with the component's tracking-tight
+              still to spare. */}
           {idx === 1 && (
             <Terminal ref={termRef} startOnView={false} className="h-auto max-h-none w-[min(86vw,660px)] max-w-none font-mono shadow-2xl">
-              <TypingAnimation duration={42} className="text-base text-green">
+              <TypingAnimation duration={42} className="text-sm text-green sm:text-base">
                 {'$ claude "build me a landing page"'}
               </TypingAnimation>
-              <AnimatedSpan className="text-base text-paper-faint">reading intent...</AnimatedSpan>
-              <AnimatedSpan className="text-base text-paper-faint">null. no taste yet.</AnimatedSpan>
-              <TypingAnimation duration={75} className="pt-3 text-lg font-bold tracking-[0.4em] text-red">
+              <AnimatedSpan className="text-sm text-paper-faint sm:text-base">reading intent...</AnimatedSpan>
+              <AnimatedSpan className="text-sm text-paper-faint sm:text-base">null. no taste yet.</AnimatedSpan>
+              <TypingAnimation duration={75} className="pt-3 text-sm font-bold tracking-[0.22em] text-red sm:text-lg sm:tracking-[0.4em]">
                 {"N U L L T O H E R O"}
               </TypingAnimation>
             </Terminal>
@@ -541,12 +566,18 @@ export function HeroScrolly() {
         {/* 4 — ANALYSIS: hard cut onto the same frame, which then freezes and desaturates
             while the redlines stamp in. No fade: the detector interrupts. */}
         <Act sp={sp} i={4} hardCut under={{ x: -60 }} className="bg-[#0d0921]">
-          <motion.div style={{ filter: filter4, opacity: 0.55 }} className="pointer-events-none absolute inset-0 grid place-items-center">
+          {/* The SAME pb-48 as the Act grid, and it is not optional.
+              Acts 3 and 4 render one SlopPage so the hard cut between them lands on
+              identical pixels and reads as a freeze frame (see NOTES). Act 3's copy sits
+              in the Act's grid and act 4's in this absolute one, so padding only the
+              first would have moved the specimen between the two acts and turned the
+              freeze into a jump. Same number, both places. */}
+          <motion.div style={{ filter: filter4, opacity: 0.55 }} className="pointer-events-none absolute inset-0 grid place-items-center pb-48 sm:pb-0">
             {mounted && <SlopPage orbY={orbY} />}
           </motion.div>
           <div className="absolute inset-0">
             {ANNOTS.map((a, k) => (
-              <Annotation key={k} sp={sp} k={k} tag={a[0]} txt={a[1]} l={a[2]} t={a[3]} />
+              <Annotation key={k} sp={sp} k={k} tag={a[0]} txt={a[1]} l={a[2]} t={a[3]} mt={a[4]} />
             ))}
           </div>
         </Act>
