@@ -141,15 +141,19 @@ type Move = { x?: number; y?: number; scale?: number; rotate?: number };
    looks, and it was tuned at desktop width only. At 375px it fell apart twice: a stamp
    at left 58% starts at 217px and runs up to 280px wide, so it ended 122px outside the
    viewport, and the two lowest ones (72%, 86%) sat underneath the narration card. On a
-   phone every stamp goes to a single left margin and takes the fifth column instead:
-   the mobile tops compress the same five beats into the top 60%, which is the part of
-   the screen the card does not own. Same stamps, same order, same subject. */
+   phone every stamp goes to a single left margin and takes the fifth column instead.
+
+   The mobile tops are bounded at BOTH ends, and the first attempt only respected one:
+   they ran 8% to 60%, and 8% of a 667px screen is 53px, which is under a nav that
+   measures 73px — the top stamp lost its badge behind the header. The usable band is
+   the nav (73px, 11%) to the card (485px, 73%). These five sit at 14% to 62%, so the
+   first clears the nav by 20px and the last clears the card by 21px. */
 const ANNOTS: [string, string, string, string, string][] = [
-  ["FAIL", "gradient text on a heading that has to be read", "8%", "12%", "8%"],
-  ["FAIL", "body set at 13px, the floor is 16px", "58%", "30%", "22%"],
-  ["FAIL", "no visible focus ring on the only CTA", "10%", "58%", "35%"],
-  ["WARN", "three identical cards: a template, not a decision", "56%", "72%", "47%"],
-  ["FAIL", "font chosen by nobody, for no reason", "30%", "86%", "60%"],
+  ["FAIL", "gradient text on a heading that has to be read", "8%", "12%", "14%"],
+  ["FAIL", "body set at 13px, the floor is 16px", "58%", "30%", "26%"],
+  ["FAIL", "no visible focus ring on the only CTA", "10%", "58%", "38%"],
+  ["WARN", "three identical cards: a template, not a decision", "56%", "72%", "50%"],
+  ["FAIL", "font chosen by nobody, for no reason", "30%", "86%", "62%"],
 ];
 
 /* A full-page act. `clip` wipes it in; `enter`/`under` drift its content so the
@@ -445,13 +449,17 @@ export function HeroScrolly() {
 
   return (
     <section ref={trackRef} data-act={idx} className="relative h-[940vh]" aria-labelledby="hero-title">
-      {/* 100svh, not 100vh. On mobile Safari `vh` is the LARGE viewport — the size the
-          page would be if the toolbar were hidden — so the stage ran taller than the
-          visible area and everything anchored to its bottom (the narration card's chips)
-          sat underneath the browser chrome. `svh` is the small viewport, always visible.
-          Not `dvh`: that one changes as the toolbar hides on scroll, which would resize
-          the stage mid-scrub. Identical to `vh` on desktop. */}
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+      {/* 100dvh. The three viewport units each get this wrong in their own way on a phone.
+          `vh` is the LARGE viewport, the size the page would be with the toolbar hidden,
+          so the stage ran taller than the visible area and the card's chips sat under the
+          browser chrome. `svh` is the small one, always visible, which fixed that and
+          bought a worse thing: the moment Safari's toolbar retracts the visible area grows,
+          the stage does not, and a black band of body opens under the act. `dvh` tracks
+          the live viewport, so the act's background and the card follow the chrome down.
+          The cost is real and accepted: dvh changes as the toolbar hides, so the stage
+          re-centres its specimen once, early. A band of black under a full-bleed act is
+          the more expensive of the two. Identical to vh on desktop. */}
+      <div className="sticky top-0 h-[100dvh] overflow-hidden">
         {/* 0 — NULL: a blank sheet, and the word writes itself onto it.
             The writing is time-based, NOT scroll-scrubbed: a hand has its own rhythm,
             and scrubbing would tie the pen's speed to the reader's wheel. Once written

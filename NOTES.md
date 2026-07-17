@@ -2,6 +2,22 @@
 
 Site refait en Next.js 16 (export statique) + Tailwind 4 + motion (Framer Motion) + React Three Fiber. Thème sombre minimal, accent rouge correction. Le hero est un scrollytelling en 7 actes (`src/components/HeroScrolly.tsx`).
 
+## Le hero sur un téléphone : quatre défauts que seul un vrai téléphone a montrés
+
+17/07/2026. Aucun n'était visible autrement : l'onglet de l'extension n'est pas focalisable (rAF suspendu, piège n°1) et Playwright ne s'installe pas dans le sandbox. **Les captures de Marius sont l'instrument.** Chaque correctif ci-dessous a été mesuré, mais c'est une capture qui a désigné la cible.
+
+**`vh`, `svh`, `dvh` : trois façons de se tromper, j'en ai essayé deux.** `vh` est le **grand** viewport (barres masquées) : le plateau dépassait la zone visible et les puces du carton passaient sous la barre de Safari. `svh` est le **petit** (barres affichées) : ça règle le premier problème et ça en crée un pire, dès que la barre se rétracte la zone visible grandit, le plateau non, et **85px de body noir** s'ouvrent sous un acte plein écran. `dvh` suit le viewport vivant. Il redimensionne le plateau quand la barre se rétracte (c'est le coût, assumé, une fois, tôt), mais il ne laisse jamais de bande. Deuxième argument, découvert à la mesure : la piste est en `h-[940vh]`, donc en grand viewport ; en `svh` le plateau valait 660 pour une piste calée sur 745, soit **1061** hauteurs de plateau au lieu de 940. `svh` compressait le rythme des actes en silence. `dvh` barre rétractée retombe sur l'unité de la piste.
+
+**Un gating de montage n'est pas un gating de largeur.** La puce d'install de l'acte 1 mesurait 396px (JetBrains Mono avance de 0,6em exactement) dans un carton qui offre 290px à 375px. Une puce est un token insécable : `flex-wrap` passe entre les puces, jamais dedans. Même cause pour le terminal : la commande faisait 34 × 16 × 0,6 = 326px pour 290px de ligne, d'où `build me a landing pag` à l'écran.
+
+**Les positions des annotations n'avaient jamais été rejouées à 375.** `left: 58%` sur 375px = 217px, plus 280px de largeur = 497px, soit 122px hors écran. Sur téléphone elles passent à une marge unique, bornées à `calc(100vw-2rem)`.
+
+**Le spécimen a deux obstacles, un à chaque bout, et corriger un seul déplace le problème.** Le carton occupe les 182px du bas, la nav `fixed` en fait 73 (mesurés). J'ai d'abord posé `pb-48` seul : la maquette est remontée se faire cisailler sous la nav. Il faut `pt-20` **et** `pb-48`, et le spécimen se centre entre les deux, pas dans le viewport.
+
+**Corollaire à ne pas oublier :** l'acte 4 centre sa maquette dans sa **propre** grille absolue, pas dans celle de l'`Act`. Tout décalage vertical doit être posé **aux deux endroits**, sinon le spécimen bouge entre l'acte 3 et l'acte 4 et le gel d'image redevient un saut.
+
+**Et un piège de mesure, pour mémoire :** `ui-serif` résout Georgia sous Windows et **New York sous iOS**, qui est plus large. Un `measureText` fait sur la machine de dev annonçait 3 lignes de paragraphe là où le téléphone en affichait 4. Mesurer ne suffit pas, il faut mesurer sur la bonne plateforme.
+
 ## Audit SEO du 17/07/2026 : ce qu'il a appris
 
 Score de départ 62/100, les 18 points du plan traités. Détail dans `ACTION-PLAN.md`. Ce qui mérite d'être retenu ici, parce que ce sont des pièges, pas des tâches :
