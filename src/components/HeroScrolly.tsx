@@ -201,14 +201,18 @@ function Act({
       className={`absolute inset-0 overflow-hidden ${className ?? ""}`}
       style={{ clipPath: clip, backgroundColor: bgColor, opacity: vis, pointerEvents: pe, zIndex: i, willChange: "clip-path" }}
     >
-      {/* pb-48 on a phone, nothing from sm up.
-          The narration card owns the bottom 182px of a 667px screen (24px of offset plus
-          158px at its tallest), and every act centres its specimen in the full height, so
-          the card landed on the mock's own content: it covered "Feature two" on act 2 and
-          the last redlines on act 4. 192px of bottom padding centres the specimen in what
-          is left instead. Desktop is untouched: there the card is a 400px note in the
-          margin of a 1536px viewport and nothing collides. */}
-      <motion.div className="grid h-full w-full place-items-center pb-48 sm:pb-0" style={{ x, y, scale, rotate, willChange: "transform" }}>
+      {/* On a phone the specimen is centred BETWEEN the nav and the card, not in the
+          viewport. Nothing from sm up.
+          Two obstacles, one at each end. The narration card owns the bottom 182px of a
+          667px screen (24px of offset plus 158px at its tallest), and the nav is fixed and
+          measures 73px. Centring in the full height put the card on the mock's own content
+          (it covered "Feature two" on act 2); padding only the bottom then slid the mock
+          straight up under the nav and sheared its heading off. pt-20 clears the nav by
+          7px, pb-48 clears the card by 10px, and the act-2 mock measures ~321px on iOS
+          against the 395px that leaves. Both ends, or neither.
+          Desktop untouched: there the card is a 400px note in the margin of a 1536px
+          viewport and nothing collides. */}
+      <motion.div className="grid h-full w-full place-items-center pb-48 pt-20 sm:p-0" style={{ x, y, scale, rotate, willChange: "transform" }}>
         {children}
       </motion.div>
     </motion.div>
@@ -566,13 +570,13 @@ export function HeroScrolly() {
         {/* 4 — ANALYSIS: hard cut onto the same frame, which then freezes and desaturates
             while the redlines stamp in. No fade: the detector interrupts. */}
         <Act sp={sp} i={4} hardCut under={{ x: -60 }} className="bg-[#0d0921]">
-          {/* The SAME pb-48 as the Act grid, and it is not optional.
+          {/* The SAME padding as the Act grid, and it is not optional.
               Acts 3 and 4 render one SlopPage so the hard cut between them lands on
               identical pixels and reads as a freeze frame (see NOTES). Act 3's copy sits
               in the Act's grid and act 4's in this absolute one, so padding only the
               first would have moved the specimen between the two acts and turned the
-              freeze into a jump. Same number, both places. */}
-          <motion.div style={{ filter: filter4, opacity: 0.55 }} className="pointer-events-none absolute inset-0 grid place-items-center pb-48 sm:pb-0">
+              freeze into a jump. Same numbers, both places. */}
+          <motion.div style={{ filter: filter4, opacity: 0.55 }} className="pointer-events-none absolute inset-0 grid place-items-center pb-48 pt-20 sm:p-0">
             {mounted && <SlopPage orbY={orbY} />}
           </motion.div>
           <div className="absolute inset-0">
