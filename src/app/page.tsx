@@ -4,6 +4,7 @@ import { HeroScrolly } from "@/components/HeroScrolly";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { InstallHowToLd, SoftwareLd, WebSiteLd } from "@/components/JsonLd";
 import { PLUGIN } from "@/lib/facts";
+import { DOORS } from "@/lib/doors";
 
 const INSTALL_1 = "/plugin marketplace add MariusYvard/NullToHero";
 const INSTALL_2 = "/plugin install null-to-hero@null-to-hero-marketplace";
@@ -37,7 +38,7 @@ const STEPS = [
   {
     n: "03",
     title: "Ask for the work",
-    body: `Then it is one slash command per job: build a feature, name what is wrong, make it findable. ${PLUGIN.commands} of them across ${PLUGIN.skills} skills, typed the way you already type /plugin.`,
+    body: `Say the goal, not a command name. Since v2.0.0 ten doors cover the journey (build, improve, check, fix, ship) and the other ${PLUGIN.commands - DOORS.length} specialists stay one level down, addressable by name. Retired names keep routing through a versioned alias table.`,
     code: "/siteasy build pricing page",
   },
   {
@@ -130,6 +131,33 @@ export default function Home() {
               </li>
             ))}
           </ol>
+        </div>
+      </section>
+
+      {/* The doors. Rendered from lib/doors.ts, the same file the /commands badges
+          read, so the two surfaces cannot disagree about what a door is. */}
+      <section className="border-b border-line bg-paper-high" aria-labelledby="doors-title">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <p className="font-mono text-sm uppercase tracking-widest text-red">Where you enter</p>
+          <h2 id="doors-title" className="mt-3 text-4xl font-black tracking-tight">
+            Ten doors. Say the goal.
+          </h2>
+          <p className="mt-4 max-w-xl text-lg text-ink-soft">
+            The surface is organized by intention: these ten cover the whole journey, and the
+            other {PLUGIN.commands - DOORS.length} commands stay one level down for when you want
+            the specialist by name.
+          </p>
+          <ul className="mt-12 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
+            {DOORS.map((d) => (
+              <li key={d.key} className="flex flex-col bg-paper p-6">
+                <h3 className="font-bold tracking-tight">{d.goal}</h3>
+                <pre className="mt-3 overflow-x-auto rounded-md border border-line bg-paper-dim px-3 py-2 font-mono text-sm text-ink">
+                  <code>{d.command}</code>
+                </pre>
+                <p className="mt-2 text-sm text-ink-soft">{d.returns}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

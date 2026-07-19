@@ -57,7 +57,7 @@ export function SoftwareLd() {
           "@type": "Person",
           "@id": `${SITE_URL}/#author`,
           name: "Marius Yvard",
-          url: "https://lecvdemarius.netlify.app/",
+          url: "https://mariusweb.fr/cv",
           /* One URL is one thread to verify an identity against. The GitHub profile is
              already true and already public; it costs nothing and gives the entity a
              second, independent anchor. */

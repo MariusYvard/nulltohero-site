@@ -1,6 +1,6 @@
 {
-  "version": "1.39.0",
-  "generatedAt": "2026-07-17",
+  "version": "2.2.1",
+  "generatedAt": "2026-07-19",
   "generatedFrom": "SKILL.md Commands tables",
   "skills": [
     {
@@ -15,10 +15,10 @@
           "description": "Shape, then build a feature end-to-end"
         },
         {
-          "name": "plan",
+          "name": "shape",
           "args": "[feature]",
           "category": "Build",
-          "description": "Plan UX/UI before writing code"
+          "description": "Shape the UX/UI before writing code"
         },
         {
           "name": "setup",
@@ -36,19 +36,13 @@
           "name": "research",
           "args": "[scope]",
           "category": "Build",
-          "description": "UX research planning, methods selection, persona and journey synthesis"
+          "description": "UX research planning, methods selection, persona and journey synthesis; generates empathy maps, journey maps and service blueprints"
         },
         {
           "name": "ia",
           "args": "[target]",
           "category": "Build",
           "description": "Information architecture, card sorting, tree testing, navigation patterns"
-        },
-        {
-          "name": "journey",
-          "args": "[persona]",
-          "category": "Build",
-          "description": "Generate empathy maps, journey maps, or service blueprints from research"
         },
         {
           "name": "document",
@@ -60,13 +54,7 @@
           "name": "extract",
           "args": "[target]",
           "category": "Build",
-          "description": "Pull reusable tokens and components into a design system"
-        },
-        {
-          "name": "handoff",
-          "args": "[target]",
-          "category": "Build",
-          "description": "Developer handoff spec: layout, tokens, props, states, breakpoints, edge cases, motion, accessibility"
+          "description": "Pull reusable tokens and components into a design system; the `handoff` deliverable emits the developer spec (layout, tokens, props, states, breakpoints, motion, accessibility)"
         },
         {
           "name": "tokens",
@@ -85,6 +73,18 @@
           "args": "[target]",
           "category": "Evaluate",
           "description": "Technical quality checks (a11y, perf, responsive, WCAG 2.2, image strategy, forms)"
+        },
+        {
+          "name": "improve",
+          "args": "[target]",
+          "category": "Refine",
+          "description": "One door for \"make it better\": symptom-to-axis dispatch to the right refine or enhance pass"
+        },
+        {
+          "name": "fix",
+          "args": "[target]",
+          "category": "Refine",
+          "description": "Execute audit findings by remediation route: triage, per-command batches, verify"
         },
         {
           "name": "polish",
@@ -111,7 +111,7 @@
           "description": "UX copy, error messages, button labels, empty states"
         },
         {
-          "name": "launch",
+          "name": "harden",
           "args": "[target]",
           "category": "Refine",
           "description": "Production hardening + performance — errors, i18n, edge cases, Core Web Vitals"
@@ -198,13 +198,13 @@
           "name": "overhaul",
           "args": "[url]",
           "category": "Journeys",
-          "description": "Audit-driven rework: baseline, triage by remediation route, execute, compare"
+          "description": "Audit-driven rework: baseline, fix by remediation route, before/after compare, ship"
         },
         {
           "name": "express",
           "args": "[brief]",
           "category": "Journeys",
-          "description": "Zero-to-landing: setup, concept, tokens, plan, build, motion, checks, launch"
+          "description": "Zero-to-landing: setup, concept, tokens, shape, build, motion, checks, harden"
         }
       ]
     },
@@ -223,7 +223,7 @@
           "name": "page",
           "args": "[url]",
           "category": "",
-          "description": "Deep single-page analysis — title, meta, H1-H6, schema, images, content quality, score"
+          "description": "Deep single-page analysis — title, meta, H1-H6, schema, images, content quality, search-experience alignment (intent, page-type match), score"
         },
         {
           "name": "plan",
@@ -262,6 +262,12 @@
           "description": "XML sitemap validation and generation with industry-specific templates"
         },
         {
+          "name": "indexnow",
+          "args": "[url]",
+          "category": "",
+          "description": "Instant-indexing pings to Bing, Yandex, Naver and Seznam — key setup, single/batch/sitemap submission; the fast lane into the indexes that feed AI answers"
+        },
+        {
           "name": "images",
           "args": "[url]",
           "category": "",
@@ -298,12 +304,6 @@
           "description": "Semantic keyword clustering — intent-based grouping, content architecture, gap analysis"
         },
         {
-          "name": "sxo",
-          "args": "[url]",
-          "category": "",
-          "description": "Search Experience Optimization — intent alignment, page-type matching, persona analysis"
-        },
-        {
           "name": "drift",
           "args": "[url]",
           "category": "",
@@ -320,12 +320,6 @@
           "args": "[url]",
           "category": "",
           "description": "E-commerce SEO — product pages, category pages, faceted navigation, Product schema"
-        },
-        {
-          "name": "report",
-          "args": "[url|file|generate]",
-          "category": "",
-          "description": "Format any audit output as a client-ready Markdown report or PDF with score gauges"
         }
       ]
     },
@@ -338,7 +332,7 @@
           "name": "detect",
           "args": "[target]",
           "category": "",
-          "description": "Deterministic anti-pattern scan — finds focus rings, clipped dropdowns, pure black/white, tiny touch targets, missing reduced-motion, and more"
+          "description": "Deterministic anti-pattern scan — finds missing focus rings, clipped dropdowns, pure black/white, tiny touch targets, missing reduced-motion, and more"
         },
         {
           "name": "preview",
@@ -348,7 +342,7 @@
         },
         {
           "name": "review",
-          "args": "[file]",
+          "args": "[target]",
           "category": "",
           "description": "Design engineering code review — motion crimes, a11y violations, forbidden patterns, Before/After table with score; plus code robustness (security, performance, correctness)"
         }
@@ -361,33 +355,9 @@
       "commands": [
         {
           "name": "full",
-          "args": "[url]",
+          "args": "[url] [scope]",
           "category": "",
-          "description": "All 15 sub-agents across SEO, defects, and design; unified report + action plan"
-        },
-        {
-          "name": "seo",
-          "args": "[url]",
-          "category": "",
-          "description": "Search-visibility group only (5 SEO sub-agents)"
-        },
-        {
-          "name": "defects",
-          "args": "[url]",
-          "category": "",
-          "description": "Front-end defect group only (4 inspect sub-agents)"
-        },
-        {
-          "name": "design",
-          "args": "[url]",
-          "category": "",
-          "description": "Design-quality group only (5 siteasy sub-agents)"
-        },
-        {
-          "name": "quick",
-          "args": "[url]",
-          "category": "",
-          "description": "One representative sub-agent per group for a fast triage"
+          "description": "All 15 sub-agents across SEO, defects, and design; unified report + action plan. Optional scope runs one group: `seo` (5 SEO sub-agents), `defects` (4 inspect), `design` (6 siteasy), `quick` (one per group for a fast triage)"
         },
         {
           "name": "checks",
@@ -422,5 +392,5 @@
       ]
     }
   ],
-  "total": 65
+  "total": 60
 }

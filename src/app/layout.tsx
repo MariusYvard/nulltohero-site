@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   description:
     `NullToHero gives Claude a complete design, SEO and quality vocabulary: ${PLUGIN.skills} skills, ${PLUGIN.commands} commands, ${PLUGIN.referenceDocs} reference docs. Free, ${PLUGIN.licence}. Install in two lines.`,
   applicationName: "NullToHero",
-  authors: [{ name: "Marius Yvard", url: "https://lecvdemarius.netlify.app/" }],
+  authors: [{ name: "Marius Yvard", url: "https://mariusweb.fr/cv" }],
   openGraph: {
     type: "website",
     title: "NullToHero: every page is born null",
@@ -110,7 +110,7 @@ function Footer() {
               stated nowhere: a visitor had to leave to find out whose judgment this is. */}
           <span className="not-italic">
             By{" "}
-            <a href="https://lecvdemarius.netlify.app/" rel="noopener author" className="underline decoration-red underline-offset-2">
+            <a href="https://mariusweb.fr/cv" rel="noopener author" className="underline decoration-red underline-offset-2">
               Marius Yvard
             </a>
             , who builds and audits the sites this plugin was written for.

@@ -56,7 +56,7 @@ const PEN: [string, number, number][] = [
  *    mechanics: what this thing is and where you type it. That was the single biggest
  *    hole on the page, so act 1 now carries it instead of a punchline.
  *  - Act 5 was captioned "corrected. committed. calm.", which is phase 06's PASS
- *    verdict, not a phase. Phase 05 (/seo, 19 commands) therefore appeared NOWHERE in
+ *    verdict, not a phase. Phase 05 (/seo, 18 commands) therefore appeared NOWHERE in
  *    the hero: the story ran design → detector → 3D and quietly dropped the second
  *    largest skill in the plugin. Act 5 now carries phase 05, and the verdict line
  *    drops to act 6 where it is earned.

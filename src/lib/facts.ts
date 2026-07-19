@@ -17,7 +17,7 @@
  * sync:commands` after a plugin release and the version follows on its own.
  *
  * The counts below still need a human, so when bumping: re-read the badge line in the
- * plugin's README (**vX.Y.Z** · 4 skills · 65 commands · 117 reference docs · 15 audit
+ * plugin's README (**vX.Y.Z** · 4 skills · 60 commands · 119 reference docs · 15 audit
  * sub-agents), and re-count perSkill from each SKILL.md's Commands table.
  *
  * Note the README carries TWO versions: that badge line, and a shields.io badge
@@ -49,8 +49,8 @@ export const PLUGIN = {
   /** The day the facts last changed, stamped by sync-commands.mjs. Not the build date. */
   updated: commands.generatedAt,
   skills: 4,
-  commands: 65,
-  referenceDocs: 117,
+  commands: 60,
+  referenceDocs: 119,
   auditAgents: 15,
   /** tools/data/inspect-rules.csv */
   inspectRules: 71,
@@ -58,7 +58,7 @@ export const PLUGIN = {
   laws: 16,
   licence: "Apache 2.0",
   /** Commands declared in each skill's own SKILL.md table. Sums to `commands`. */
-  perSkill: { siteasy: 33, seo: 19, audit: 10, inspect: 3 },
+  perSkill: { siteasy: 33, seo: 18, audit: 6, inspect: 3 },
 } as const;
 
 /** "4 skills · 65 commands · 116 docs · Apache 2.0" — the one-line spec strip. */

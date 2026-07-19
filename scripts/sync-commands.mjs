@@ -135,7 +135,14 @@ out.total = total;
    the header-driven parser produced 64 where facts says 65, and that gap is the only
    reason the dropped `report` command was ever noticed. A parser that reports its own
    total and nothing else can be confidently wrong. */
-const expected = { siteasy: 33, seo: 19, audit: 10, inspect: 3 };
+/* Read the human copy out of facts.ts instead of keeping a third copy here: the
+   two independent readings are the parser and facts.ts, not the parser and a
+   constant that itself rots (this line sat at 19/10 for two plugin releases). */
+const factsSrc = fs.readFileSync(path.join("src", "lib", "facts.ts"), "utf8");
+const perSkillMatch = factsSrc.match(/perSkill:\s*\{([^}]+)\}/);
+if (!perSkillMatch) { console.error("[sync-commands] cannot find perSkill in src/lib/facts.ts"); process.exit(1); }
+const expected = {};
+for (const mm of perSkillMatch[1].matchAll(/(\w+):\s*(\d+)/g)) expected[mm[1]] = Number(mm[2]);
 const drift = out.skills
   .filter((s) => expected[s.id] !== undefined && s.commands.length !== expected[s.id])
   .map((s) => `/${s.id}: parsed ${s.commands.length}, facts.ts says ${expected[s.id]}`);

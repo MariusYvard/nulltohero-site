@@ -52,7 +52,7 @@ export const PHASES: Phase[] = [
     title: "Structure, then rhythm",
     short: "Architecture first, then a type scale you actually chose. Styling over the wrong structure is a poster nobody can use.",
     body: "Information architecture first, then the typographic scale and the spacing system that carry it. A page with the right structure and no styling is readable. A page with beautiful styling over the wrong structure is a poster nobody can use. The scale is a decision, not a default: pick the steps, then hold them everywhere.",
-    commands: ["/siteasy plan", "/siteasy layout", "/siteasy typeset"],
+    commands: ["/siteasy shape", "/siteasy layout", "/siteasy typeset"],
     verdict: { tag: "FAIL", text: "body set at 13px, the floor is 16px" },
   },
   {
@@ -61,7 +61,7 @@ export const PHASES: Phase[] = [
     title: "Commit to a voice",
     short: "A voice is a set of refusals. Effects are what you reach for when you have not decided anything.",
     body: "This is where most pages reach for a gradient and a glow and call it a direction. A voice is a set of refusals: one accent, one signature moment, an anti-reference you name out loud. Effects are what you add when you have not decided anything. The plugin will ask you what you are refusing before it lets you add a beam.",
-    commands: ["/siteasy craft", "/siteasy colorize", "/siteasy animate"],
+    commands: ["/siteasy amplify", "/siteasy delight", "/siteasy animate"],
     verdict: { tag: "WARN", text: "three identical cards: a template, not a decision" },
   },
   {

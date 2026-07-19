@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DOOR_KEYS } from "@/lib/doors";
 import Link from "next/link";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { BorderBeam } from "@/components/ui/border-beam";
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 const INSTALL = "/plugin install null-to-hero@null-to-hero-marketplace";
 
 /* This page is generated: scripts/sync-commands.mjs reads the Commands table out
-   of each SKILL.md in the plugin repo. Hand-writing 65 rows would rot exactly the
+   of each SKILL.md in the plugin repo. Hand-writing 60 rows would rot exactly the
    way the hero's numbers rotted to v1.2.0 while the plugin shipped v1.33.0. */
 export default function Commands() {
   return (
@@ -64,10 +65,15 @@ export default function Commands() {
               <ul className="mt-8 grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2">
                 {skill.commands.map((c) => (
                   <li key={c.name} className="bg-paper p-4">
-                    <p className="font-mono text-sm">
-                      <span className="text-ink-faint">/{skill.id} </span>
-                      <span className="font-bold text-ink">{c.name}</span>
-                      {c.args ? <span className="text-ink-faint">{c.args}</span> : null}
+                    <p className="flex items-baseline gap-2 font-mono text-sm">
+                      <span>
+                        <span className="text-ink-faint">/{skill.id} </span>
+                        <span className="font-bold text-ink">{c.name}</span>
+                        {c.args ? <span className="text-ink-faint">{c.args}</span> : null}
+                      </span>
+                      {DOOR_KEYS.has(`${skill.id} ${c.name}`) ? (
+                        <span className="rounded border border-red/40 px-1.5 py-0.5 text-[11px] uppercase tracking-widest text-red">door</span>
+                      ) : null}
                     </p>
                     <p className="mt-1.5 text-sm text-ink-soft">{c.description}</p>
                   </li>
