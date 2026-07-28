@@ -1,6 +1,6 @@
 {
-  "version": "2.2.1",
-  "generatedAt": "2026-07-19",
+  "version": "2.3.0",
+  "generatedAt": "2026-07-28",
   "generatedFrom": "SKILL.md Commands tables",
   "skills": [
     {
@@ -316,6 +316,18 @@
           "description": "Backlink profile analysis via free data sources (Moz, Bing, Common Crawl, GSC)"
         },
         {
+          "name": "performance",
+          "args": "[export]",
+          "category": "",
+          "description": "Real performance data (Search Console export): striking distance, cannibalisation, auto-calibrated CTR curve, period comparison, decay, four-quadrant refresh matrix"
+        },
+        {
+          "name": "migrate",
+          "args": "[url]",
+          "category": "",
+          "description": "Site migration protocol: state freeze, risk map, redirect map, cutover checklist, T+1/T+7/T+30 diffs"
+        },
+        {
           "name": "ecommerce",
           "args": "[url]",
           "category": "",
@@ -392,5 +404,5 @@
       ]
     }
   ],
-  "total": 60
+  "total": 62
 }

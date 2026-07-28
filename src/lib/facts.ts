@@ -49,16 +49,16 @@ export const PLUGIN = {
   /** The day the facts last changed, stamped by sync-commands.mjs. Not the build date. */
   updated: commands.generatedAt,
   skills: 4,
-  commands: 60,
-  referenceDocs: 119,
+  commands: 62,
+  referenceDocs: 129,
   auditAgents: 15,
   /** tools/data/inspect-rules.csv */
   inspectRules: 71,
   /** tools/data/laws.csv — the numeric laws with stable ids */
-  laws: 16,
+  laws: 24,
   licence: "Apache 2.0",
   /** Commands declared in each skill's own SKILL.md table. Sums to `commands`. */
-  perSkill: { siteasy: 33, seo: 18, audit: 6, inspect: 3 },
+  perSkill: { siteasy: 33, seo: 20, audit: 6, inspect: 3 },
 } as const;
 
 /** "4 skills · 65 commands · 116 docs · Apache 2.0" — the one-line spec strip. */
