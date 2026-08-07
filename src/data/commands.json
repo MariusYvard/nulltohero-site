@@ -1,6 +1,6 @@
 {
-  "version": "2.4.0",
-  "generatedAt": "2026-07-31",
+  "version": "3.5.2",
+  "generatedAt": "2026-08-07",
   "generatedFrom": "SKILL.md Commands tables",
   "skills": [
     {
@@ -60,7 +60,7 @@
           "name": "tokens",
           "args": "[project]",
           "category": "Build",
-          "description": "Audit or create a two-layer CSS token system — primitives + semantic layer + dark mode"
+          "description": "Audit or create a two-layer CSS token system, primitives + semantic layer + dark mode"
         },
         {
           "name": "critique",
@@ -96,7 +96,7 @@
           "name": "amplify",
           "args": "[target]",
           "category": "Refine",
-          "description": "Amplify safe or bland designs — bolder typography, stronger color, more presence"
+          "description": "Amplify safe or bland designs, bolder typography, stronger color, more presence"
         },
         {
           "name": "simplify",
@@ -114,7 +114,7 @@
           "name": "harden",
           "args": "[target]",
           "category": "Refine",
-          "description": "Production hardening + performance — errors, i18n, edge cases, Core Web Vitals"
+          "description": "Production hardening + performance, errors, i18n, edge cases, Core Web Vitals"
         },
         {
           "name": "onboard",
@@ -156,7 +156,7 @@
           "name": "mobile",
           "args": "[target]",
           "category": "Enhance",
-          "description": "Phone-specific ergonomics — thumb zone, touch targets, mobile navigation, virtual keyboards, mobile audit"
+          "description": "Phone-specific ergonomics, thumb zone, touch targets, mobile navigation, virtual keyboards, mobile audit"
         },
         {
           "name": "delight",
@@ -265,7 +265,7 @@
           "name": "indexnow",
           "args": "[url]",
           "category": "",
-          "description": "Instant-indexing pings to Bing, Yandex, Naver and Seznam — key setup, single/batch/sitemap submission; the fast lane into the indexes that feed AI answers"
+          "description": "Instant-indexing pings to the IndexNow participants (`L-INDEXNOW-1`) — key setup, single/batch/sitemap submission; the fast lane into the indexes that feed AI answers"
         },
         {
           "name": "images",
@@ -289,7 +289,7 @@
           "name": "programmatic",
           "args": "[url]",
           "category": "",
-          "description": "Programmatic SEO — URL patterns, quality gates (warn 100+, hard stop 500+), deduplication"
+          "description": "Programmatic SEO — URL patterns, the four graduated quality gates of `L-PROG-1`, deduplication"
         },
         {
           "name": "competitor-pages",

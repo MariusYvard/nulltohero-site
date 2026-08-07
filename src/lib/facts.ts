@@ -50,12 +50,12 @@ export const PLUGIN = {
   updated: commands.generatedAt,
   skills: 4,
   commands: 62,
-  referenceDocs: 129,
+  referenceDocs: 130,
   auditAgents: 15,
   /** tools/data/inspect-rules.csv */
   inspectRules: 72,
   /** tools/data/laws.csv — the numeric laws with stable ids */
-  laws: 26,
+  laws: 30,
   licence: "Apache 2.0",
   /** Commands declared in each skill's own SKILL.md table. Sums to `commands`. */
   perSkill: { siteasy: 33, seo: 20, audit: 6, inspect: 3 },
