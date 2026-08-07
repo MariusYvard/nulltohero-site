@@ -55,7 +55,7 @@ export const PLUGIN = {
   /** tools/data/inspect-rules.csv */
   inspectRules: 72,
   /** tools/data/laws.csv — the numeric laws with stable ids */
-  laws: 30,
+  laws: 32,
   licence: "Apache 2.0",
   /** Commands declared in each skill's own SKILL.md table. Sums to `commands`. */
   perSkill: { siteasy: 33, seo: 20, audit: 6, inspect: 3 },
