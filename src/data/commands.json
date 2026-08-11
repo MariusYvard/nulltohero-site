@@ -1,6 +1,6 @@
 {
-  "version": "3.6.0",
-  "generatedAt": "2026-08-07",
+  "version": "3.7.0",
+  "generatedAt": "2026-08-11",
   "generatedFrom": "SKILL.md Commands tables",
   "skills": [
     {
@@ -344,19 +344,19 @@
           "name": "detect",
           "args": "[target]",
           "category": "",
-          "description": "Deterministic anti-pattern scan — finds missing focus rings, clipped dropdowns, pure black/white, tiny touch targets, missing reduced-motion, and more"
+          "description": "Deterministic anti-pattern scan. Finds missing focus rings, clipped dropdowns, pure black/white, tiny touch targets, missing reduced-motion, and more"
         },
         {
           "name": "preview",
           "args": "[target]",
           "category": "",
-          "description": "Real Chromium screenshot — desktop + mobile viewports, reads back visually, fixes bugs in a loop"
+          "description": "Real Chromium screenshot. Desktop and mobile viewports, reads back visually, fixes bugs in a loop"
         },
         {
           "name": "review",
           "args": "[target]",
           "category": "",
-          "description": "Design engineering code review — motion crimes, a11y violations, forbidden patterns, Before/After table with score; plus code robustness (security, performance, correctness)"
+          "description": "Design engineering code review. Motion crimes, a11y violations, forbidden patterns, Before/After table with score; plus code robustness (security, performance, correctness)"
         }
       ]
     },
